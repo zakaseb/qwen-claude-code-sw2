@@ -1,0 +1,236 @@
+# ============================================================================
+# TEMPLATE: 00_metadata.yaml
+# Model Metadata Template
+# ============================================================================
+# Purpose: Define model identification, ownership, dependencies, and standards
+# Usage: Copy this template and fill in values for your module
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | number | list | dict
+# - Example values shown in [brackets]
+
+# ============================================================================
+# METADATA SECTION (MANDATORY)
+# ============================================================================
+
+metadata:  # MANDATORY
+  
+  # Model Identification (MANDATORY)
+  model_id: ""  # MANDATORY - Type: string - Format: "MBSE-<MODULE>-<NUMBER>" - Example: "MBSE-WIND-001"
+  model_name: ""  # MANDATORY - Type: string - Example: "WindModule"
+  version: ""  # MANDATORY - Type: string - Format: "major.minor" - Example: "1.0"
+  date: ""  # MANDATORY - Type: string - Format: "YYYY-MM-DD" - Example: "2025-10-02"
+  
+  # Original Code Information (OPTIONAL - for reverse engineering)
+  original_code:  # OPTIONAL
+    function_name: ""  # OPTIONAL - Type: string - Current function name
+    original_function_name: ""  # OPTIONAL - Type: string - Legacy function name if renamed
+    source_file: ""  # OPTIONAL - Type: string - Example: "Module.c"
+    header_file: ""  # OPTIONAL - Type: string - Example: "Module.h"
+    created_date: ""  # OPTIONAL - Type: string - Format: "YYYY-MM-DD"
+    original_author: ""  # OPTIONAL - Type: string
+    legacy_description: ""  # OPTIONAL - Type: string
+  
+  # Current MBSE Model (MANDATORY)
+  author: ""  # MANDATORY - Type: string - Who created this MBSE model
+  status: ""  # MANDATORY - Type: string - Values: [draft, in_review, approved, reverse_engineered]
+  confidence: 0.0  # OPTIONAL - Type: float - Range: 0.0-1.0 - For reverse engineering
+  
+  # Module Ownership (MANDATORY)
+  ownership:  # MANDATORY
+    owns:  # MANDATORY - Type: list - Elements owned by this module
+      - ""  # Example: "WindSet function"
+      # EXTENSIBLE: Add more owned elements
+      
+    uses_external:  # OPTIONAL - Type: list - External dependencies
+      - ""  # Example: "CRC module (CalculateCRC)"
+      # EXTENSIBLE: Add more external dependencies
+      
+    context_only:  # OPTIONAL - Type: list - Referenced but not owned
+      - ""  # Example: "Weapon system (global structure)"
+      # EXTENSIBLE: Add more context elements
+  
+  # Dependencies (OPTIONAL)
+  dependencies:  # OPTIONAL
+    system_includes:  # OPTIONAL - Type: list
+      - ""  # Example: "math.h"
+      # EXTENSIBLE: Add system headers
+      
+    project_includes:  # OPTIONAL - Type: list
+      - ""  # Example: "TypeDefines.h"
+      # EXTENSIBLE: Add project headers
+  
+  # Standards Compliance (OPTIONAL - EXTENSIBLE)
+  standards:  # OPTIONAL - Type: list of dicts
+    - name: ""  # Type: string - Example: "MIL-STD-1760D"
+      scope: ""  # Type: string - Example: "CRC calculation"
+      applicable_to:  # Type: list
+        - ""  # Example: "sWind structure"
+      note: ""  # OPTIONAL - Type: string
+      status: ""  # OPTIONAL - Type: string - Values: [compliant, to_be_verified, non_compliant]
+    # EXTENSIBLE: Add more standards
+  
+  # Tooling Configuration (OPTIONAL)
+  tooling:  # OPTIONAL
+    sysml_profile: ""  # OPTIONAL - Type: string - Example: "SysML_1.6"
+    xmi_version: ""  # OPTIONAL - Type: string - Example: "2.5.1"
+    
+    compatible_tools:  # OPTIONAL - Type: list of dicts
+      - name: ""  # Type: string - Example: "Papyrus"
+        version: ""  # Type: string - Example: "5.0+"
+      # EXTENSIBLE: Add more tools
+    
+    output_formats:  # OPTIONAL - Type: list
+      - ""  # Example: "xmi", "code_c", "documentation_markdown"
+      # EXTENSIBLE: Add more output formats
+  
+  # Code Characteristics (OPTIONAL - for reverse engineering)
+  code_characteristics:  # OPTIONAL
+    language: ""  # OPTIONAL - Type: string - Example: "C"
+    compiler_directives:  # OPTIONAL - Type: list
+      - ""  # Example: "#pragma pack(1)"
+      
+    data_packing: ""  # OPTIONAL - Type: string - Example: "explicit_1_byte_alignment"
+    
+    structure_sizes:  # OPTIONAL - Type: dict - EXTENSIBLE
+      # structure_name: size_in_bytes
+      
+    constants:  # OPTIONAL - Type: dict - EXTENSIBLE
+      # CONSTANT_NAME: value
+      
+    boolean_representation: ""  # OPTIONAL - Type: string - Example: "TRUE/FALSE macros"
+  
+  # Implementation Notes (OPTIONAL - EXTENSIBLE)
+  implementation_notes:  # OPTIONAL - Type: list
+    - ""  # Example: "Function originally named XYZ"
+    # EXTENSIBLE: Add observations
+  
+  # Change History (OPTIONAL - EXTENSIBLE)
+  change_history:  # OPTIONAL - Type: list of dicts
+    - version: ""  # Type: string
+      date: ""  # Type: string - Format: "YYYY-MM-DD"
+      author: ""  # Type: string
+      changes: ""  # Type: string - Description of changes
+    # EXTENSIBLE: Add more history entries
+
+# ============================================================================
+# SCHEMA SECTION (OPTIONAL)
+# ============================================================================
+
+schema:  # OPTIONAL
+  version: ""  # OPTIONAL - Type: string - Schema version
+  namespace: ""  # OPTIONAL - Type: string - Example: "http://mbse.example.com/module"
+  prefix: ""  # OPTIONAL - Type: string - Example: "mod"
+
+# ============================================================================
+# VALIDATION SECTION (OPTIONAL)
+# ============================================================================
+
+validation:  # OPTIONAL
+  
+  required_sections:  # OPTIONAL - Type: list
+    - ""  # Example: "metadata", "requirements", "blocks"
+    # EXTENSIBLE: Add sections to validate
+  
+  consistency_checks:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - check: ""  # Type: string - Check identifier
+      description: ""  # Type: string - What is checked
+    # EXTENSIBLE: Add more checks
+
+# ============================================================================
+# PROCESSING SECTION (OPTIONAL)
+# ============================================================================
+
+processing:  # OPTIONAL
+  
+  load_order:  # OPTIONAL - Type: list - Order to load YAML files
+    - "00_metadata.yaml"
+    - "01_requirements_diagram.yaml"
+    # EXTENSIBLE: Add more files in order
+  
+  merge_strategy: ""  # OPTIONAL - Type: string - Values: [deep_merge, shallow_merge, overwrite]
+  conflict_resolution: ""  # OPTIONAL - Type: string - Values: [fail_on_conflict, use_first, use_last]
+
+# ============================================================================
+# REVERSE ENGINEERING SECTION (OPTIONAL)
+# ============================================================================
+
+reverse_engineering:  # OPTIONAL - For reverse-engineered models
+  
+  method: ""  # OPTIONAL - Type: string - Example: "manual_code_analysis"
+  
+  tools_used:  # OPTIONAL - Type: list
+    - ""  # Example: "tree-sitter (C parser)"
+    # EXTENSIBLE: Add tools
+  
+  extraction_confidence:  # OPTIONAL - Type: dict - EXTENSIBLE
+    # aspect: confidence_value (0.0-1.0)
+    structure_definition: 0.0  # Example
+  
+  inferred_requirements:  # OPTIONAL - Type: list - EXTENSIBLE
+    - ""  # Requirements inferred from code
+  
+  assumptions:  # OPTIONAL - Type: list - EXTENSIBLE
+    - ""  # Assumptions made during reverse engineering
+
+# ============================================================================
+# NOTES SECTION (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+notes:  # OPTIONAL
+  
+  design_observations:  # OPTIONAL - Type: list
+    - ""
+    # EXTENSIBLE: Add observations
+  
+  potential_issues:  # OPTIONAL - Type: list
+    - ""
+    # EXTENSIBLE: Add issues
+  
+  legacy_compatibility:  # OPTIONAL - Type: list
+    - ""
+    # EXTENSIBLE: Add compatibility notes
+  
+  # EXTENSIBLE: Add custom note categories
+  custom_category:  # OPTIONAL
+    - ""
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+# EXTENSIBLE: Add any custom sections needed for your project
+custom_section:  # OPTIONAL
+  custom_field: ""  # Define your own structure
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Metadata template for MBSE reverse engineering"
+  usage_instructions: |
+    1. Copy this template to your project
+    2. Rename to 00_metadata.yaml
+    3. Fill in MANDATORY fields
+    4. Add OPTIONAL fields as needed
+    5. Extend with custom sections as required
+  
+  field_types:
+    string: "Text value"
+    number: "Numeric value (integer or float)"
+    list: "Array of values"
+    dict: "Key-value pairs"
+    
+  extension_guidelines:
+    - "Preserve MANDATORY fields"
+    - "Add OPTIONAL fields as needed"
+    - "Use consistent naming conventions"
+    - "Document custom extensions"
+    - "Maintain YAML syntax"

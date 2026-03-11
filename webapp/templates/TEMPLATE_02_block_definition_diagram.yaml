@@ -1,0 +1,367 @@
+# ============================================================================
+# TEMPLATE: 02_block_definition_diagram.yaml
+# Block Definition Diagram Template
+# ============================================================================
+# Purpose: Define structure and composition - blocks, operations, properties
+# Usage: Copy this template and define all blocks for your module
+# Dependencies: 00_metadata.yaml, 01_requirements_diagram.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | number | list | dict
+# - Example values shown in [brackets]
+
+# ============================================================================
+# BLOCKS SECTION (MANDATORY)
+# ============================================================================
+
+blocks:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+  
+  # ===== FUNCTION BLOCK TEMPLATE =====
+  - id: ""  # MANDATORY - Type: string - Format: "BLK-<Name>" - Example: "BLK-FunctionName"
+    stereotype: block  # MANDATORY - Type: string - Value: "block"
+    name: ""  # MANDATORY - Type: string - Block name
+    type: function_block  # MANDATORY - Type: string - Values: [function_block, value_type, system_block, external]
+    owner: this_module  # MANDATORY - Type: string - Values: [this_module, external_module, external, context_only]
+    
+    description: ""  # MANDATORY - Type: string - What this block does
+    
+    # Operations (for function blocks)
+    operations:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      - id: ""  # MANDATORY - Type: string - Format: "OP-<Name>"
+        name: ""  # MANDATORY - Type: string - Operation/function name
+        visibility: public  # MANDATORY - Type: string - Values: [public, private, protected]
+        
+        description: ""  # OPTIONAL - Type: string
+        original_name: ""  # OPTIONAL - Type: string - If renamed during reverse engineering
+        created: ""  # OPTIONAL - Type: string - Date
+        author: ""  # OPTIONAL - Type: string
+        
+        parameters:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+          - name: ""  # Type: string - Parameter name
+            type: ""  # Type: string - Data type
+            direction: ""  # Type: string - Values: [in, out, inout]
+            description: ""  # OPTIONAL - Type: string
+            default_value: ""  # OPTIONAL - Type: string/number
+          # EXTENSIBLE: Add more parameters
+        
+        return:  # OPTIONAL - Type: dict
+          type: ""  # Type: string - Return type
+          description: ""  # OPTIONAL - Type: string
+          values:  # OPTIONAL - Type: list - For enumerated returns
+            - value: ""  # Value
+              meaning: ""  # What it means
+          # EXTENSIBLE: Add return values
+        
+        preconditions:  # OPTIONAL - Type: list
+          - ""  # Conditions that must be true before call
+        
+        postconditions:  # OPTIONAL - Type: list
+          - ""  # Conditions guaranteed after call
+        
+        exceptions:  # OPTIONAL - Type: list
+          - ""  # Exceptions this can throw
+      
+      # EXTENSIBLE: Add more operations
+    
+    # Values/Properties (for data blocks or local variables)
+    values:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      - name: ""  # Type: string - Property/variable name
+        type: ""  # Type: string - Data type
+        scope: ""  # OPTIONAL - Type: string - Values: [local, member, global]
+        visibility: ""  # OPTIONAL - Type: string - Values: [public, private, protected]
+        offset: 0  # OPTIONAL - Type: number - Byte offset in structure
+        size: 0  # OPTIONAL - Type: number - Size in bytes
+        unit: ""  # OPTIONAL - Type: string - Example: "meters", "seconds"
+        description: ""  # OPTIONAL - Type: string
+        range: []  # OPTIONAL - Type: list - [min, max]
+        default_value: ""  # OPTIONAL - Type: string/number
+        multiplicity: ""  # OPTIONAL - Type: string - Example: "1", "[8]", "0..*"
+        constant: ""  # OPTIONAL - Type: string - If defined by constant
+        code_comment: ""  # OPTIONAL - Type: string - Comment from source code
+      # EXTENSIBLE: Add more values
+    
+    # Relationships
+    uses:  # OPTIONAL - Type: list - Blocks this uses
+      - ""  # Example: "BLK-OtherBlock"
+      # EXTENSIBLE: Add blocks
+    
+    modifies:  # OPTIONAL - Type: list - What this modifies
+      - ""  # Example: "BLK-DataStructure.field"
+      # EXTENSIBLE: Add modified elements
+    
+    parts:  # OPTIONAL - Type: list of dicts - For composite blocks
+      - name: ""  # Part name
+        type: ""  # Block type
+        multiplicity: ""  # Example: "1", "0..*"
+        description: ""  # OPTIONAL
+      # EXTENSIBLE: Add parts
+    
+    # Requirements satisfied
+    satisfies:  # MANDATORY - Type: list - Requirements this block satisfies
+      - ""  # Example: "REQ-MODULE-001"
+      # EXTENSIBLE: Add requirements
+    
+    # Behavior
+    behavior: ""  # OPTIONAL - Type: string - Activity/state machine ID - Example: "ACT-FunctionName"
+    
+    # Additional metadata
+    packing: ""  # OPTIONAL - Type: string - Example: "#pragma pack(1)"
+    alignment: 0  # OPTIONAL - Type: number - Alignment in bytes
+    access: ""  # OPTIONAL - Type: string - Example: "global variable"
+    defined_in: ""  # OPTIONAL - Type: string - Source file
+    note: ""  # OPTIONAL - Type: string
+    is_external: false  # OPTIONAL - Type: boolean
+  
+  # ===== VALUE TYPE BLOCK TEMPLATE =====
+  - id: ""  # MANDATORY - Format: "BLK-<StructName>"
+    stereotype: block  # MANDATORY
+    name: ""  # MANDATORY
+    type: value_type  # MANDATORY
+    owner: this_module  # MANDATORY
+    
+    description: ""  # MANDATORY
+    
+    packing: ""  # OPTIONAL - Example: "#pragma pack(1)"
+    
+    values:  # MANDATORY for value types - Structure fields
+      - name: ""  # MANDATORY
+        type: ""  # MANDATORY
+        offset: 0  # OPTIONAL
+        size: 0  # OPTIONAL
+        unit: ""  # OPTIONAL
+        description: ""  # OPTIONAL
+        range: []  # OPTIONAL
+      # EXTENSIBLE: Add fields
+    
+    # Constraints
+    size: 0  # OPTIONAL - Total size in bytes
+    size_unit: bytes  # OPTIONAL
+    alignment: 0  # OPTIONAL
+    note: ""  # OPTIONAL
+    
+    satisfies:  # MANDATORY
+      - ""
+  
+  # ===== EXTERNAL BLOCK TEMPLATE =====
+  - id: ""  # MANDATORY - Format: "EXT-<Name>"
+    stereotype: block  # MANDATORY
+    name: ""  # MANDATORY
+    owner: external_module  # MANDATORY
+    is_external: true  # MANDATORY
+    
+    description: ""  # MANDATORY - Brief signature/interface description
+    
+    operations:  # OPTIONAL - External operations used
+      - name: ""
+        parameters: []
+        return:
+          type: ""
+    
+    defined_in: ""  # OPTIONAL - Header file
+    note: ""  # OPTIONAL - Example: "Not designed here - owned by X module"
+  
+  # EXTENSIBLE: Add more blocks
+
+# ============================================================================
+# BLOCK RELATIONSHIPS (OPTIONAL)
+# ============================================================================
+
+relationships:  # OPTIONAL
+  
+  # Composition (part-whole)
+  composition:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - container: ""  # Type: string - Container block ID
+      part: ""  # Type: string - Part block ID
+      multiplicity: ""  # Type: string - Example: "1", "[8]"
+      property_name: ""  # OPTIONAL - Type: string
+      description: ""  # OPTIONAL - Type: string
+    # EXTENSIBLE: Add relationships
+  
+  # Aggregation (has-a)
+  aggregation:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - whole: ""  # Type: string
+      part: ""  # Type: string
+      multiplicity: ""  # Type: string
+      description: ""  # OPTIONAL
+    # EXTENSIBLE: Add relationships
+  
+  # Usage (uses)
+  usage:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - user: ""  # Type: string - Block that uses
+      used: ""  # Type: string - Block being used
+      description: ""  # OPTIONAL - Type: string
+    # EXTENSIBLE: Add relationships
+  
+  # Modification (modifies)
+  modification:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - modifier: ""  # Type: string - Block that modifies
+      modified: ""  # Type: string - Block being modified
+      condition: ""  # OPTIONAL - Type: string - When modification happens
+      description: ""  # OPTIONAL - Type: string
+    # EXTENSIBLE: Add relationships
+  
+  # Generalization (inheritance)
+  generalization:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - general: ""  # Type: string - Parent/base block
+      specific: ""  # Type: string - Child/derived block
+      description: ""  # OPTIONAL
+    # EXTENSIBLE: Add relationships
+  
+  # Dependency
+  dependency:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - client: ""  # Type: string
+      supplier: ""  # Type: string
+      stereotype: ""  # OPTIONAL - Type: string
+      description: ""  # OPTIONAL
+    # EXTENSIBLE: Add relationships
+  
+  # EXTENSIBLE: Add custom relationship types
+
+# ============================================================================
+# INTERFACES (OPTIONAL)
+# ============================================================================
+
+interfaces:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # Type: string - Format: "INTF-<Name>"
+    name: ""  # Type: string - Interface name
+    type: ""  # Type: string - Values: [provided, required]
+    
+    operations:  # Type: list - Operations in interface
+      - ""
+    
+    provided_by:  # OPTIONAL - Type: list
+      - ""  # Block IDs
+    
+    required_by:  # OPTIONAL - Type: list
+      - ""  # Block IDs
+  
+  # EXTENSIBLE: Add interfaces
+
+# ============================================================================
+# PORTS (OPTIONAL)
+# ============================================================================
+
+ports:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # Type: string - Format: "PORT-<Name>"
+    name: ""  # Type: string
+    block: ""  # Type: string - Block ID this port belongs to
+    direction: ""  # Type: string - Values: [in, out, inout]
+    type: ""  # Type: string - Values: [flow, standard]
+    
+    interface: ""  # OPTIONAL - Type: string - Interface provided/required
+    
+    data_type: ""  # OPTIONAL - Type: string
+  
+  # EXTENSIBLE: Add ports
+
+# ============================================================================
+# CONSTRAINTS (OPTIONAL)
+# ============================================================================
+
+constraints:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # Type: string
+    constraint: ""  # Type: string - Constraint expression
+    applies_to:  # Type: list
+      - ""  # Block IDs
+    description: ""  # OPTIONAL
+  
+  # EXTENSIBLE: Add constraints
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_blocks: 0  # Type: number
+  owned_blocks: 0  # Type: number
+  external_blocks: 0  # Type: number
+  context_blocks: 0  # Type: number
+  
+  block_types:  # OPTIONAL
+    function_block: 0
+    value_type: 0
+    system_block: 0
+    external: 0
+  
+  relationships:  # OPTIONAL
+    composition: 0
+    aggregation: 0
+    usage: 0
+    modification: 0
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+# EXTENSIBLE: Add project-specific sections
+custom_block_metadata:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Block definition diagram template - defines structure and composition"
+  
+  usage_instructions: |
+    1. Copy this template to your project
+    2. Rename to 02_block_definition_diagram.yaml
+    3. Define blocks for:
+       - Functions (function_block with operations)
+       - Data structures (value_type with values/fields)
+       - External dependencies (external blocks)
+       - Context elements (system_block, context_only)
+    4. For each block:
+       - Assign unique ID (BLK-<Name>)
+       - Define operations (for functions) or values (for data)
+       - Specify relationships (uses, modifies, contains)
+       - Link to requirements satisfied
+    5. Define relationships between blocks
+    6. Update statistics
+  
+  block_types_guide:
+    function_block: |
+      Use for functions, algorithms, behaviors.
+      Include operations, parameters, return types.
+      Example: BLK-WindSet (validation function)
+    
+    value_type: |
+      Use for data structures, types, classes.
+      Include fields with offsets, sizes, types.
+      Example: BLK-sWind (structure definition)
+    
+    system_block: |
+      Use for high-level system components.
+      May contain parts, provide context.
+      Example: BLK-Weapon (global system context)
+    
+    external: |
+      Use for dependencies not owned by this module.
+      Include only interface/signature info.
+      Example: EXT-CRC-Calculator
+  
+  relationship_types_guide:
+    composition: "Strong ownership - part cannot exist without whole"
+    aggregation: "Weak ownership - part can exist independently"
+    usage: "One block uses services of another"
+    modification: "One block changes state of another"
+    generalization: "Inheritance or specialization"
+    dependency: "One block depends on another"
+  
+  common_mistakes:
+    - "Missing 'satisfies' field (all blocks must satisfy requirements)"
+    - "External blocks too detailed (only show interface)"
+    - "Inconsistent naming (use BLK- prefix)"
+    - "Missing relationships (show how blocks connect)"
+    - "No operations for function blocks"
+    - "No values for value_type blocks"

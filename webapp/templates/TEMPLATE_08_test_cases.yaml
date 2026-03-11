@@ -1,0 +1,327 @@
+# ============================================================================
+# TEMPLATE: 08_test_cases.yaml
+# Test Cases Template
+# ============================================================================
+# Purpose: Detailed test specifications implementing verification requirements
+# Usage: Copy this template and define test procedures
+# Dependencies: 01b_verification_requirements.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+
+# ============================================================================
+# TEST CASES SECTION (MANDATORY)
+# ============================================================================
+
+test_cases:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+  
+  # ===== UNIT TEST TEMPLATE =====
+  - id: ""  # MANDATORY - Type: string - Format: "TC-<n>" - Example: "TC-001"
+    stereotype: test_case  # MANDATORY - Type: string - Value: "test_case"
+    name: ""  # MANDATORY - Type: string - Descriptive test name
+    
+    implements: ""  # MANDATORY - Type: string - Verification requirement ID
+    verifies: ""  # MANDATORY - Type: string OR list - Requirement ID(s)
+    
+    test_type: ""  # MANDATORY - Type: string - Values: [unit_test, integration_test, system_test, performance_test, stress_test, boundary_test]
+    test_level: ""  # MANDATORY - Type: string - Values: [module, subsystem, system]
+    priority: ""  # MANDATORY - Type: string - Values: [critical, high, medium, low]
+    
+    objective: ""  # MANDATORY - Type: string - What this test verifies
+    
+    preconditions:  # OPTIONAL - Type: list - Setup required
+      - ""
+      # EXTENSIBLE
+    
+    test_data:  # OPTIONAL - Type: list of dicts - Test data needed
+      - name: ""  # Data item name
+        type: ""  # Data type
+        fields: {}  # OPTIONAL - Structure fields
+        description: ""  # OPTIONAL
+      # EXTENSIBLE
+    
+    test_steps:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      - step: 1  # MANDATORY - Type: number - Step number
+        action: ""  # MANDATORY - Type: string - What to do
+        expected: ""  # MANDATORY - Type: string - Expected result
+        parameters: {}  # OPTIONAL - Parameters for this step
+        note: ""  # OPTIONAL
+      # EXTENSIBLE: Add steps
+    
+    assertions:  # MANDATORY - Type: list - What must be true
+      - ""  # Assertion statement
+      # EXTENSIBLE
+    
+    pass_criteria:  # MANDATORY - Type: list - Conditions for PASS
+      - ""  # Criterion
+      # EXTENSIBLE
+    
+    test_framework: ""  # OPTIONAL - Type: string - Example: "Unity", "Google Test"
+    estimated_duration: 0  # OPTIONAL - Type: number
+    estimated_duration_unit: ""  # OPTIONAL - Example: "milliseconds"
+    
+    postconditions:  # OPTIONAL - Type: list - State after test
+      - ""
+    
+    dependencies:  # OPTIONAL - Type: list - Other tests that must pass first
+      - ""
+    
+    notes: ""  # OPTIONAL - Type: string
+  
+  # ===== INTEGRATION TEST TEMPLATE =====
+  - id: ""
+    stereotype: test_case
+    name: ""
+    implements: ""
+    verifies: ""
+    test_type: integration_test
+    test_level: subsystem
+    priority: ""
+    objective: ""
+    
+    test_steps: []
+    assertions: []
+    pass_criteria: []
+  
+  # ===== CODE REVIEW TEMPLATE =====
+  - id: ""  # Format: "REVIEW-<n>"
+    stereotype: review
+    name: ""
+    implements: ""
+    verifies: []
+    test_type: code_review
+    test_level: module
+    priority: ""
+    objective: ""
+    
+    review_checklist:  # MANDATORY for reviews - Type: list of dicts
+      - item: 1  # Checklist item number
+        check: ""  # What to check
+        location: ""  # OPTIONAL - Where in code
+        expected: ""  # Expected state
+        method: ""  # OPTIONAL - How to check
+      # EXTENSIBLE
+    
+    assertions: []
+    pass_criteria: []
+    estimated_duration: 0
+    estimated_duration_unit: "minutes"
+  
+  # ===== PERFORMANCE TEST TEMPLATE =====
+  - id: ""
+    stereotype: test_case
+    name: ""
+    implements: ""
+    verifies: ""
+    test_type: performance_test
+    test_level: module
+    priority: ""
+    objective: ""
+    
+    performance_metrics:  # MANDATORY for performance tests
+      - metric: ""  # Example: "execution_time"
+        target: 0  # Target value
+        unit: ""
+        tolerance: 0  # Acceptable deviation
+      # EXTENSIBLE
+    
+    test_steps: []
+    assertions: []
+    pass_criteria: []
+  
+  # EXTENSIBLE: Add more test cases
+
+# ============================================================================
+# TEST SUITES (OPTIONAL)
+# ============================================================================
+
+test_suites:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # Type: string - Format: "TS-<n>"
+    name: ""  # Type: string - Suite name
+    description: ""  # Type: string
+    test_cases: []  # Type: list - Test case IDs
+    priority: ""  # Type: string
+    
+    setup: ""  # OPTIONAL - Suite-level setup
+    teardown: ""  # OPTIONAL - Suite-level teardown
+  
+  # EXTENSIBLE: Add suites
+
+# ============================================================================
+# TEST EXECUTION PLAN (OPTIONAL)
+# ============================================================================
+
+test_execution:  # OPTIONAL
+  
+  execution_order:  # OPTIONAL - Type: list of dicts
+    - phase: 1  # Phase number
+      name: ""  # Phase name
+      tests: []  # Test IDs to run
+      rationale: ""  # Why this order
+    # EXTENSIBLE
+  
+  test_environment:  # OPTIONAL
+    framework: ""  # Test framework
+    mock_framework: ""  # OPTIONAL - Mock framework
+    compiler: ""  # Compiler
+    target: ""  # Target platform
+    
+  entry_criteria:  # OPTIONAL - Type: list
+    - ""  # What must be ready
+  
+  exit_criteria:  # OPTIONAL - Type: list
+    - ""  # When testing is complete
+
+# ============================================================================
+# COVERAGE ANALYSIS (OPTIONAL)
+# ============================================================================
+
+coverage:  # OPTIONAL
+  
+  requirements_coverage:  # OPTIONAL
+    total_requirements: 0
+    requirements_verified: 0
+    coverage_percentage: 0
+  
+  code_coverage_targets:  # OPTIONAL
+    line_coverage: 0  # Percentage
+    branch_coverage: 0
+    function_coverage: 0
+    note: ""
+  
+  test_cases_per_requirement:  # OPTIONAL - Type: list of dicts
+    - requirement: ""  # Requirement ID
+      test_cases: []  # Test case IDs
+    # EXTENSIBLE
+
+# ============================================================================
+# TRACEABILITY (MANDATORY)
+# ============================================================================
+
+traceability:  # MANDATORY
+  
+  test_to_verification:  # MANDATORY - Type: list of dicts
+    - test: ""  # Test case ID
+      verification: ""  # Verification requirement ID
+    # EXTENSIBLE
+  
+  test_to_requirement:  # OPTIONAL - Type: list of dicts
+    - test: ""  # Test case ID
+      requirement: ""  # Requirement ID
+    # EXTENSIBLE
+
+# ============================================================================
+# TEST DATA REPOSITORY (OPTIONAL)
+# ============================================================================
+
+test_data_repository:  # OPTIONAL - Type: list of dicts
+  
+  - id: ""  # Data set ID
+    name: ""  # Data set name
+    type: ""  # Data type
+    source: ""  # Where it comes from
+    location: ""  # File path or description
+    used_by: []  # Test case IDs
+  
+  # EXTENSIBLE
+
+# ============================================================================
+# MOCK SPECIFICATIONS (OPTIONAL)
+# ============================================================================
+
+mocks:  # OPTIONAL - Type: list of dicts
+  
+  - function: ""  # Function to mock
+    framework: ""  # Mock framework
+    behavior: ""  # Expected behavior
+    used_by: []  # Test case IDs
+  
+  # EXTENSIBLE
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_test_cases: 0
+  unit_tests: 0
+  integration_tests: 0
+  system_tests: 0
+  code_reviews: 0
+  
+  by_priority:
+    critical: 0
+    high: 0
+    medium: 0
+    low: 0
+  
+  estimated_execution_time: 0
+  estimated_execution_time_unit: ""
+  
+  requirements_coverage: 0
+  requirements_coverage_unit: percent
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+custom_test_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Test cases template - detailed test procedures"
+  
+  usage_instructions: |
+    1. Copy this template
+    2. Rename to 08_test_cases.yaml
+    3. For each verification requirement:
+       - Create test case(s) that implement it
+       - Use appropriate test type template
+       - Define clear test steps
+       - Specify assertions and pass criteria
+    4. Organize into test suites
+    5. Define execution plan
+    6. Ensure traceability complete
+    7. Update coverage statistics
+  
+  test_case_types:
+    unit_test: "Test individual functions/modules"
+    integration_test: "Test module interactions"
+    system_test: "Test complete system"
+    code_review: "Manual inspection with checklist"
+    performance_test: "Verify timing/resource metrics"
+    stress_test: "Test under extreme conditions"
+    boundary_test: "Test edge cases and limits"
+  
+  test_writing_guidelines:
+    - "One test case per verification requirement minimum"
+    - "Clear, numbered test steps"
+    - "Measurable assertions"
+    - "Explicit pass/fail criteria"
+    - "Include setup and teardown"
+    - "Consider positive and negative cases"
+  
+  common_mistakes:
+    - "Vague test steps (not reproducible)"
+    - "Missing expected results"
+    - "No assertions"
+    - "Unclear pass criteria"
+    - "Missing traceability links"
+    - "No test data specified"
+    
+  best_practices:
+    - "Test one thing per test case"
+    - "Make tests independent"
+    - "Use descriptive names"
+    - "Document assumptions"
+    - "Automate where possible"

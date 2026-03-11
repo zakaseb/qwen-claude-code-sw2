@@ -11,8 +11,9 @@ RUN apt-get update \
     && find /var/cache/apt/archives /var/lib/apt/lists -not -name lock -type f -delete \
     && find /var/cache -type f -delete
 
-# Install litellm proxy and huggingface_hub
-RUN python3 -m pip install --no-cache-dir -U huggingface_hub hf_transfer 'litellm[proxy]'
+# Install litellm proxy, huggingface_hub, and webapp deps
+RUN python3 -m pip install --no-cache-dir -U huggingface_hub hf_transfer 'litellm[proxy]' \
+    fastapi 'uvicorn[standard]' httpx
 
 # Install Claude Code
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - \
@@ -94,5 +95,6 @@ COPY --chown=developer:developer hf_download.py /home/developer/hf_download.py
 COPY --chown=developer:developer test_anthropic.sh /home/developer/test_anthropic.sh
 COPY --chown=developer:developer test_anthropic_reasoning.sh /home/developer/test_anthropic_reasoning.sh
 COPY --chown=developer:developer test_openai.sh /home/developer/test_openai.sh
+COPY --chown=developer:developer webapp /home/developer/webapp
 
 ENTRYPOINT [ "/home/developer/entrypoint.sh" ]

@@ -1,0 +1,376 @@
+﻿# ============================================================================
+# TEMPLATE: 07_allocations.yaml
+# Allocation Diagram Template
+# ============================================================================
+# Purpose: Map logical design to physical resources - CPU, memory, timing
+# Usage: Copy this template and define resource allocations
+# Dependencies: 00_metadata.yaml, 02_block_definition_diagram.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - TBD indicates system-level decision not yet made
+
+# ============================================================================
+# ALLOCATIONS SECTION (MANDATORY)
+# ============================================================================
+
+allocations:  # MANDATORY
+  
+  # ===== COMPUTATIONAL ALLOCATION =====
+  computational:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Type: string - Format: "ALLOC-COMP-<n>"
+      stereotype: allocate  # MANDATORY - Type: string - Value: "allocate"
+      name: ""  # MANDATORY - Type: string - Allocation name
+      
+      from:  # MANDATORY - Logical element
+        type: ""  # Type: string - Values: [function, algorithm, activity, operation]
+        element: ""  # Block/Activity ID
+        operation: ""  # OPTIONAL - Specific operation name
+      
+      to:  # MANDATORY - Physical resource
+        type: processor  # Type: string - Value: "processor"
+        element: ""  # Processor ID
+        name: ""  # Processor name
+      
+      allocation_type: execution  # MANDATORY - Type: string - Value: "execution"
+      
+      properties:  # OPTIONAL
+        execution_context: ""  # Example: "main_thread", "interrupt", "task"
+        priority: ""  # Values: [critical, high, medium, low]
+        preemptible: false  # Type: boolean
+      
+      rationale: ""  # OPTIONAL
+      satisfies: ""  # OPTIONAL - Requirement ID
+    
+    # EXTENSIBLE: Add computational allocations
+  
+  # ===== MEMORY ALLOCATION =====
+  memory:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Format: "ALLOC-MEM-<n>"
+      stereotype: allocate  # MANDATORY
+      name: ""  # MANDATORY
+      
+      from:  # MANDATORY - Data element
+        type: ""  # Type: string - Values: [data_structure, variable, constant, code]
+        element: ""  # Block ID or variable name
+        block: ""  # OPTIONAL - Block ID if applicable
+      
+      to:  # MANDATORY - Memory resource
+        type: memory  # Type: string - Value: "memory"
+        element: ""  # Memory section ID
+        section: ""  # Example: ".data", ".bss", ".text", ".rodata"
+      
+      allocation_type: storage  # MANDATORY - Type: string - Values: [storage, temporary_storage]
+      
+      properties:  # MANDATORY
+        size: 0  # MANDATORY - Type: number
+        size_unit: bytes  # MANDATORY - Type: string
+        alignment: 0  # OPTIONAL - Type: number
+        access: ""  # MANDATORY - Type: string - Values: [read_only, read_write, write_only]
+        volatility: ""  # OPTIONAL - Values: [volatile, non_volatile]
+        scope: ""  # OPTIONAL - Values: [global, local, static]
+      
+      memory_address: ""  # OPTIONAL - Actual address or "TBD"
+      note: ""  # OPTIONAL
+      
+      satisfies: []  # OPTIONAL - Type: list - Requirement IDs
+    
+    # EXTENSIBLE: Add memory allocations
+  
+  # ===== INTERFACE ALLOCATION =====
+  interface:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Format: "ALLOC-INTF-<n>"
+      stereotype: allocate  # MANDATORY
+      name: ""  # MANDATORY
+      
+      from:  # MANDATORY - Logical interface
+        type: parameter  # Type: string - Values: [parameter, port, signal]
+        element: ""  # Element ID
+        parameter: ""  # OPTIONAL - Parameter type
+      
+      to:  # MANDATORY - Physical interface
+        type: ""  # Type: string - Values: [communication_buffer, hardware_port, bus]
+        element: ""  # Interface element ID
+      
+      allocation_type: data_transfer  # MANDATORY - Type: string
+      
+      properties:  # OPTIONAL
+        buffer_size: 0  # Type: number
+        buffer_size_unit: bytes  # Type: string
+        protocol: ""  # Protocol name
+        interface: ""  # Interface type
+      
+      note: ""  # OPTIONAL
+      satisfies: ""  # OPTIONAL
+    
+    # EXTENSIBLE: Add interface allocations
+  
+  # ===== TIMING ALLOCATION =====
+  timing:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Format: "ALLOC-TIME-<n>"
+      stereotype: allocate  # MANDATORY
+      name: ""  # MANDATORY
+      
+      from:  # MANDATORY - Function/activity
+        type: function  # Type: string - Values: [function, activity, operation]
+        element: ""  # Block/Activity ID
+      
+      to:  # MANDATORY - Time budget
+        type: time_budget  # Type: string - Value: "time_budget"
+        element: ""  # Budget ID
+      
+      allocation_type: temporal  # MANDATORY - Type: string - Value: "temporal"
+      
+      properties:  # MANDATORY
+        allocated_time: 0  # MANDATORY - Type: number
+        allocated_time_unit: ""  # MANDATORY - Example: "milliseconds"
+        actual_wcet: 0  # OPTIONAL - Type: number - Worst case execution time
+        actual_wcet_unit: ""  # OPTIONAL
+        margin: 0  # OPTIONAL - Type: number - Percentage
+        margin_unit: percent  # OPTIONAL
+      
+      rationale: ""  # OPTIONAL
+      related_constraint: ""  # OPTIONAL - Constraint block ID
+    
+    # EXTENSIBLE: Add timing allocations
+
+# ============================================================================
+# RESOURCES INVENTORY (OPTIONAL)
+# ============================================================================
+
+resources:  # OPTIONAL
+  
+  # Processors
+  processors:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    - id: ""  # Type: string
+      name: ""  # Type: string
+      type: ""  # Type: string - Example: "embedded_processor"
+      architecture: ""  # Example: "ARM_Cortex", "x86_64"
+      clock_speed: 0  # Type: number or "TBD"
+      clock_speed_unit: ""  # Example: "MHz"
+      
+      allocated_functions: []  # Type: list - Function names
+    
+    # EXTENSIBLE: Add processors
+  
+  # Memory Sections
+  memory_sections:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # Type: string
+      name: ""  # Type: string
+      type: ""  # Type: string - Values: [volatile_memory, non_volatile_memory]
+      technology: ""  # Example: "SRAM", "DRAM", "Flash", "EEPROM"
+      section: ""  # Example: ".text", ".data", ".bss"
+      
+      properties:  # OPTIONAL
+        total_size: 0  # or "TBD"
+        access: ""  # Example: "read_only", "read_write"
+      
+      allocated_data: []  # Type: list - What's allocated here
+    
+    # EXTENSIBLE: Add memory sections
+  
+  # Communication Buffers
+  communication_buffers:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # Type: string
+      name: ""  # Type: string
+      type: communication_buffer  # Type: string
+      protocol: ""  # Protocol name
+      
+      properties:  # OPTIONAL
+        size: 0  # Type: number
+        size_unit: bytes
+        note: ""
+      
+      allocated_messages: []  # Type: list
+    
+    # EXTENSIBLE: Add buffers
+  
+  # Time Budgets
+  time_budgets:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # Type: string
+      name: ""  # Type: string
+      type: time_budget  # Type: string
+      period: 0  # Type: number
+      period_unit: ""  # Example: "milliseconds"
+      
+      allocated_functions: []  # Type: list
+    
+    # EXTENSIBLE: Add time budgets
+
+# ============================================================================
+# DEPLOYMENT MAPPING (OPTIONAL)
+# ============================================================================
+
+deployment:  # OPTIONAL
+  
+  software_to_hardware:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - software_component: ""  # Type: string - Component name
+      source_files: []  # Type: list - Source file names
+      
+      hardware_platform: ""  # Type: string - Platform name
+      processor: ""  # Type: string - Processor ID
+      
+      memory_usage:  # OPTIONAL
+        code: 0  # Bytes in flash/ROM
+        data: 0  # Bytes in RAM
+        stack: 0  # Bytes per call
+      
+      note: ""  # OPTIONAL
+    
+    # EXTENSIBLE: Add mappings
+
+# ============================================================================
+# ALLOCATION CONSTRAINTS (OPTIONAL)
+# ============================================================================
+
+constraints:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - constraint: ""  # Type: string - Constraint description
+    element: ""  # Type: string - Element this applies to
+    requirement: ""  # Type: string - What must be satisfied
+    verified_by: ""  # Type: string - How verified
+    margin: ""  # OPTIONAL - Safety margin
+    note: ""  # OPTIONAL
+  
+  # EXTENSIBLE: Add constraints
+
+# ============================================================================
+# RESOURCE BUDGETS (OPTIONAL)
+# ============================================================================
+
+budgets:  # OPTIONAL
+  
+  memory_budget:  # OPTIONAL - Type: list of dicts
+    - category: ""  # Example: "code_flash", "data_ram", "stack"
+      allocated: 0  # Type: number
+      available: 0  # Type: number or "TBD"
+      unit: bytes
+      percentage: 0  # OPTIONAL
+      note: ""  # OPTIONAL
+    # EXTENSIBLE
+  
+  timing_budget:  # OPTIONAL - Type: list of dicts
+    - category: ""  # Example: "main_loop", "interrupt"
+      allocated: 0
+      actual: 0
+      available: 0
+      unit: ""
+      margin: 0
+      margin_unit: percent
+      status: ""  # Values: [within_budget, at_risk, exceeded]
+    # EXTENSIBLE
+
+# ============================================================================
+# INTERFACE CONNECTIONS (OPTIONAL)
+# ============================================================================
+
+interface_connections:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - connection: ""  # Type: string - Connection name
+    source: ""  # Type: string
+    destination: ""  # Type: string
+    protocol: ""  # OPTIONAL
+    data_type: ""  # OPTIONAL
+    transfer_size: 0  # OPTIONAL
+    transfer_size_unit: ""  # OPTIONAL
+    condition: ""  # OPTIONAL
+    trigger: ""  # OPTIONAL
+  
+  # EXTENSIBLE: Add connections
+
+# ============================================================================
+# TRACEABILITY (OPTIONAL)
+# ============================================================================
+
+traceability:  # OPTIONAL
+  
+  allocations_to_requirements:  # OPTIONAL - Type: list of dicts
+    - allocation: ""  # Allocation ID
+      requirements: []  # Requirement IDs
+    # EXTENSIBLE
+  
+  allocations_to_blocks:  # OPTIONAL - Type: list of dicts
+    - allocation: ""  # Allocation ID
+      blocks: []  # Block IDs
+    # EXTENSIBLE
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_allocations: 0
+  computational_allocations: 0
+  memory_allocations: 0
+  interface_allocations: 0
+  timing_allocations: 0
+  
+  memory_footprint:  # OPTIONAL
+    code: 0
+    data: 0
+    stack: 0
+    unit: bytes
+  
+  timing_budget_usage: 0  # Percentage
+  timing_budget_unit: percent
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+custom_allocation_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Allocation diagram template - maps logical design to physical resources"
+  
+  usage_instructions: |
+    1. Copy this template
+    2. Rename to 07_allocations.yaml
+    3. Define allocations in categories:
+       - Computational: Functions → Processors
+       - Memory: Data/Code → RAM/Flash sections
+       - Interface: Parameters → Buffers/Ports
+       - Timing: Functions → Time budgets
+    4. Document resource inventory (processors, memory, buffers)
+    5. Map deployment (software → hardware)
+    6. Define constraints and budgets
+    7. Update traceability
+  
+  allocation_categories:
+    computational: "Which processor executes which function"
+    memory: "Where data and code are stored"
+    interface: "How logical interfaces map to physical"
+    timing: "Time budget allocation per function"
+  
+  when_to_specify:
+    early_design: "Use TBD for system-level decisions"
+    detailed_design: "Specify exact allocations"
+    implementation: "Update with actual values"
+  
+  common_patterns:
+    embedded: "Functions→CPU, Code→Flash, Data→RAM, Stack→RAM"
+    distributed: "Functions→multiple processors with IPC"
+    
+  common_mistakes:
+    - "Missing size information for memory allocations"
+    - "No timing budgets for real-time systems"
+    - "Inconsistent units"
+    - "No traceability to requirements"

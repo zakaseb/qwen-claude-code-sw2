@@ -1,0 +1,998 @@
+﻿# ============================================================================
+# REVERSE ENGINEERING WORKFLOW
+# Model-Based Systems Engineering (MBSE) from Source Code
+# ============================================================================
+# Version: 1.0
+# Date: 2025-10-02
+# Purpose: Document complete workflow for reverse engineering embedded systems
+#          from source code to MBSE YAML models
+# ============================================================================
+
+workflow_metadata:
+  approach: bottom_up
+  direction: code_to_model
+  methodology: AI_augmented_reverse_engineering
+  
+  guiding_principles:
+    - "Code is initial source of truth during reverse engineering"
+    - "Every AI-generated artifact requires human validation"
+    - "Continuous coherency checking throughout process"
+    - "Traceability added incrementally as artifacts created"
+    - "Latest human update is authoritative in conflicts"
+
+# ============================================================================
+# WORKFLOW OVERVIEW
+# ============================================================================
+
+workflow_phases:
+  - phase: 1
+    name: "Situation Awareness"
+    purpose: "Understand module structure and dependencies"
+    
+  - phase: 2
+    name: "Requirements Extraction"
+    purpose: "Extract what and when from code"
+    
+  - phase: 3
+    name: "Verification Strategy"
+    purpose: "Define how to verify requirements"
+    
+  - phase: 4
+    name: "Design Capture"
+    purpose: "Document how system works"
+    
+  - phase: 5
+    name: "Test Generation"
+    purpose: "Create executable test specifications"
+    
+  - phase: 6
+    name: "Smart Tools (Future)"
+    purpose: "Bidirectional sync and change management"
+
+# ============================================================================
+# PHASE 1: SITUATION AWARENESS
+# ============================================================================
+
+phase_1_situation_awareness:
+  
+  phase_number: 1
+  phase_name: "Situation Awareness - Module Metadata"
+  
+  objective: |
+    Extract high-level module information: ownership, dependencies,
+    standards, code characteristics. Establish foundation for subsequent phases.
+  
+  inputs:
+    - artifact: Module_Source_Code
+      type: source_files
+      format: ".c and .h files"
+      content: "Complete source code for one module"
+      
+  process:
+    
+    ai_engine:
+      name: "AI Engine Metadata"
+      type: "Claude Sonnet 4.5 with specialized prompt"
+      
+      prompt_strategy:
+        system_prompt: |
+          You are an expert systems engineer performing reverse engineering.
+          Analyze source code and extract metadata following TEMPLATE_00_metadata.yaml.
+          Focus on: ownership, dependencies, standards compliance, code characteristics.
+        
+        user_prompt_template: |
+          Analyze the following source code and generate 00_metadata.yaml:
+          
+          Source Files:
+          {source_code}
+          
+          Use TEMPLATE_00_metadata.yaml as guide.
+          Include: model_id, ownership (owns/uses_external/context_only),
+          dependencies, standards, code characteristics, implementation notes.
+      
+      context_management:
+        - "Include complete source code in prompt"
+        - "Include TEMPLATE_00_metadata.yaml structure"
+        - "If code > context window, process function by function"
+        
+    validation:
+      
+      validation_point: "After AI generates 00_metadata.yaml"
+      validation_type: human_review
+      validation_granularity: entire_file
+      
+      validation_interface:
+        primary: "Human reads YAML in text editor"
+        secondary: "Brief summary of changes document generated"
+        
+      validation_actions:
+        - action: accept
+          description: "Metadata correct, proceed to next phase"
+          next_step: "Phase 2"
+          
+        - action: reject
+          description: "Metadata incorrect, re-run AI with feedback"
+          next_step: "Retry with human annotations"
+          
+        - action: modify
+          description: "Edit YAML directly, mark as human-edited"
+          metadata_flag: "human_validated: true, human_modified: true"
+          next_step: "Phase 2"
+      
+      validation_criteria:
+        checklist:
+          - "All MANDATORY fields filled"
+          - "ownership.owns lists correct elements"
+          - "dependencies match #include statements"
+          - "standards identified correctly"
+          - "code_characteristics accurate"
+          
+      validation_tracking:
+        method: separate_tracking_file
+        file: "validation_log.yaml"
+        entry_format:
+          artifact: "00_metadata.yaml"
+          status: "validated"
+          validator: "Engineer Name"
+          timestamp: "2025-10-02T10:30:00Z"
+          result: "accept | reject | modify"
+          notes: "Optional feedback"
+    
+    coherency_check:
+      
+      engine: "AI Engine Coherency"
+      check_type: [syntactic, semantic]
+      frequency: continuously
+      
+      checks:
+        - check: yaml_syntax_valid
+          description: "Valid YAML structure, no syntax errors"
+          
+        - check: mandatory_fields_present
+          description: "All MANDATORY fields from template filled"
+          
+        - check: ids_unique
+          description: "model_id is unique in project"
+          
+        - check: dependencies_resolvable
+          description: "All listed dependencies exist in project"
+      
+      discrepancy_handling:
+        on_discrepancy:
+          - "Generate explanation of problem"
+          - "Propose fix with rationale"
+          - "Flag for human intervention"
+          
+        example_discrepancy: |
+          PROBLEM: ownership.uses_external lists "CRC module" but no CRC.h in includes
+          PROPOSED FIX: Add "#include CRC.h" to dependencies.project_includes
+          HUMAN ACTION REQUIRED: Verify CRC.h exists in project
+  
+  outputs:
+    - artifact: 00_metadata.yaml
+      status: NEW
+      description: "Complete module metadata"
+      traceability: "None (first artifact)"
+      
+  configuration_options:
+    processing_mode: configurable
+    options:
+      - option: sequential_validation
+        description: "Generate → validate → proceed"
+        
+      - option: batch_then_validate
+        description: "Generate all artifacts → validate all"
+
+# ============================================================================
+# PHASE 2: REQUIREMENTS EXTRACTION
+# ============================================================================
+
+phase_2_requirements_extraction:
+  
+  phase_number: 2
+  phase_name: "Requirements Extraction - What and When"
+  
+  objective: |
+    Extract functional and interface requirements from source code.
+    Document WHAT the module does and WHEN behaviors occur.
+  
+  inputs:
+    - artifact: Module_Source_Code
+      status: unchanged
+      
+    - artifact: 00_metadata.yaml
+      status: validated
+      usage: "Provides context on ownership and dependencies"
+      
+  process:
+    
+    ai_engine:
+      name: "AI Engine Requirement"
+      type: "Claude Sonnet 4.5 with requirements extraction prompt"
+      
+      prompt_strategy:
+        system_prompt: |
+          You are an expert requirements engineer performing reverse engineering.
+          Extract requirements from source code following TEMPLATE_01_requirements_diagram.yaml.
+          Focus on: functional requirements (SHALL statements), interface requirements,
+          priorities (critical/high/medium/low), rationale.
+        
+        user_prompt_template: |
+          Analyze source code and generate 01_requirements_diagram.yaml:
+          
+          Context (from metadata):
+          {00_metadata_summary}
+          
+          Source Code:
+          {source_code}
+          
+          Extract:
+          - Functional requirements (what module does)
+          - Interface requirements (data structures, APIs)
+          - Performance requirements (if timing/resource constraints in code)
+          - Safety/Security requirements (if applicable)
+          
+          Write as SHALL statements. Assign priorities. Provide rationale.
+          Use TEMPLATE_01_requirements_diagram.yaml structure.
+      
+      requirements_extraction_rules:
+        - "One function → multiple functional requirements"
+        - "Each if-statement may indicate conditional requirement"
+        - "Data validation → interface requirement"
+        - "Comments/docstrings → requirement rationale"
+        - "CRC checks → integrity requirements"
+        - "Error handling → fault tolerance requirements"
+        
+    validation:
+      
+      validation_point: "After AI generates 01_requirements_diagram.yaml"
+      validation_type: human_review
+      validation_granularity: any_data
+      note: "Human can review entire file, per requirement, or per section"
+      
+      validation_interface:
+        primary: "YAML in text editor"
+        change_summary: "Brief document listing all requirements extracted"
+        
+      validation_actions:
+        - action: accept
+        - action: reject
+        - action: modify
+          
+      validation_criteria:
+        checklist:
+          - "All requirements are SHALL/SHOULD statements"
+          - "Requirements testable and verifiable"
+          - "Priorities assigned logically"
+          - "Rationale explains why requirement exists"
+          - "No ambiguous terms (appropriate, sufficient, etc.)"
+          - "Requirements reflect actual code behavior"
+          - "satisfiedBy field populated (links to design)"
+          - "verifiedBy field populated (links to verification)"
+          
+      validation_tracking:
+        file: "validation_log.yaml"
+        entry_per_validation: true
+    
+    coherency_check:
+      
+      checks:
+        - check: requirements_reflect_code
+          type: semantic
+          method: "Static analysis - code paths vs requirements"
+          example: |
+            Code has 3 conditional branches
+            Requirements document 3 conditional behaviors
+            
+        - check: no_hallucinated_requirements
+          description: "Every requirement maps to code functionality"
+          
+        - check: requirements_ids_unique
+          description: "REQ-MODULE-XXX IDs unique within module"
+          
+        - check: traceability_stubs_valid
+          description: "satisfiedBy/verifiedBy reference valid patterns"
+          note: "Actual links added in later phases"
+  
+  outputs:
+    - artifact: 01_requirements_diagram.yaml
+      status: NEW
+      description: "Complete requirements with initial traceability stubs"
+      traceability:
+        satisfiedBy: "Placeholder - will link to design blocks"
+        verifiedBy: "Placeholder - will link to verification requirements"
+
+# ============================================================================
+# PHASE 3: VERIFICATION STRATEGY
+# ============================================================================
+
+phase_3_verification_strategy:
+  
+  phase_number: 3
+  phase_name: "Verification Requirements - How to Verify"
+  
+  objective: |
+    Define HOW each requirement will be verified.
+    Generate verification requirements and establish test strategy.
+  
+  inputs:
+    - artifact: 01_requirements_diagram.yaml
+      status: validated
+      usage: "Source of requirements to verify"
+      
+  process:
+    
+    ai_engine:
+      name: "AI Engine Verification Requirement"
+      type: "Claude Sonnet 4.5 with verification strategy prompt"
+      
+      prompt_strategy:
+        system_prompt: |
+          You are a test engineer defining verification strategy.
+          For each requirement, define verification method and approach.
+          Follow TEMPLATE_01b_verification_requirements.yaml.
+        
+        user_prompt_template: |
+          Generate verification requirements for:
+          
+          Requirements:
+          {01_requirements_summary}
+          
+          For each requirement:
+          - Assign verification method (unit_test, code_review, analysis, etc.)
+          - Write step-by-step verification approach
+          - Define acceptance criteria (what is PASS)
+          - Link to test cases (placeholder IDs)
+          
+          Use TEMPLATE_01b_verification_requirements.yaml structure.
+      
+      verification_method_selection:
+        functional_requirements: "unit_test or integration_test"
+        interface_requirements: "code_review + unit_test"
+        performance_requirements: "performance_test + analysis"
+        safety_requirements: "multiple methods (test + review + analysis)"
+        
+    validation:
+      validation_point: "After AI generates 01b_verification_requirements.yaml"
+      validation_type: human_review
+      validation_granularity: any_data
+      
+      validation_criteria:
+        checklist:
+          - "Every requirement has verification requirement"
+          - "Verification method appropriate for requirement type"
+          - "Verification approach detailed enough to implement"
+          - "Acceptance criteria measurable and objective"
+          - "Test case IDs follow TC-XXX format"
+          
+    coherency_check:
+      checks:
+        - check: one_to_one_mapping
+          description: "Every requirement has ≥1 verification requirement"
+          
+        - check: verification_method_valid
+          description: "Methods from allowed list"
+          
+        - check: traceability_complete
+          description: "verifies field links to valid requirement ID"
+    
+    traceability_update:
+      
+      action: "Update 01_requirements_diagram.yaml"
+      
+      update_type: ADD_TRACEABILITY
+      
+      fields_updated:
+        - field: "requirements[].verifiedBy"
+          value: "VER-REQ-XXX IDs"
+          description: "Link each requirement to verification requirements"
+          
+      example: |
+        Before:
+          verifiedBy: []
+        
+        After:
+          verifiedBy:
+            - VER-REQ-001
+            - VER-REQ-002
+  
+  outputs:
+    - artifact: 01b_verification_requirements.yaml
+      status: NEW
+      description: "Verification strategy for all requirements"
+      
+    - artifact: 01_requirements_diagram.yaml
+      status: UPDATED
+      update_type: ADD_TRACEABILITY
+      fields_changed: "verifiedBy"
+
+# ============================================================================
+# PHASE 4: DESIGN CAPTURE
+# ============================================================================
+
+phase_4_design_capture:
+  
+  phase_number: 4
+  phase_name: "Design Capture - How System Works"
+  
+  objective: |
+    Extract design from source code: structure (blocks), behavior (activities),
+    interactions (sequences), constraints (parametric), allocations.
+  
+  inputs:
+    - artifact: Module_Source_Code
+      status: unchanged
+      
+    - artifact: 00_metadata.yaml
+      status: validated
+      
+    - artifact: 01_requirements_diagram.yaml
+      status: updated_with_verification_traceability
+      usage: "Design must satisfy requirements"
+      
+  process:
+    
+    ai_engine:
+      name: "AI Engine Design"
+      type: "Claude Sonnet 4.5 with multi-diagram generation"
+      
+      sub_phases:
+        
+        # --- Block Definition ---
+        - sub_phase: 4a
+          name: "Block Definition"
+          output: "02_block_definition_diagram.yaml"
+          
+          prompt_strategy: |
+            Extract structure from code:
+            - Functions → function_blocks with operations
+            - Structures → value_types with fields
+            - External dependencies → external blocks
+            - Global variables → context blocks
+            
+            Follow TEMPLATE_02_block_definition_diagram.yaml
+          
+          extraction_rules:
+            - "Each function → one function_block with operations"
+            - "Each struct/typedef → one value_type with values"
+            - "Each #include external → one external block (signature only)"
+            - "Global variables → context block reference"
+            
+        # --- Activity Diagram ---
+        - sub_phase: 4b
+          name: "Activity Diagram"
+          output: "03_activity_diagram.yaml"
+          
+          prompt_strategy: |
+            Extract algorithm flow:
+            - Map source lines to activity nodes
+            - if/switch → DecisionNode + guards
+            - Function calls → CallBehaviorAction
+            - Assignments → OpaqueAction
+            - loops → DecisionNode with back-edge
+            
+            Follow TEMPLATE_03_activity_diagram.yaml
+          
+          code_mapping:
+            required: true
+            format: "source_line → activity_node mapping"
+            
+        # --- State Machine ---
+        - sub_phase: 4c
+          name: "State Machine"
+          output: "04_state_machine_diagram.yaml"
+          
+          prompt_strategy: |
+            Determine if state machine exists:
+            - Look for operational modes
+            - Look for state variables
+            - Look for state-dependent behavior
+            
+            If NO state machine:
+              status: not_applicable
+              state_machines: []
+              rationale: "Module is stateless"
+            
+            If YES state machine:
+              Extract states, transitions, guards
+            
+            Follow TEMPLATE_04_state_machine_diagram.yaml
+          
+          state_machine_indicators:
+            has: ["modes", "state_variable", "history_dependent_behavior"]
+            not_has: ["stateless_function", "no_memory_between_calls"]
+            
+        # --- Sequence Diagram ---
+        - sub_phase: 4d
+          name: "Sequence Diagram"
+          output: "05_sequence_diagram.yaml"
+          
+          prompt_strategy: |
+            Extract message interactions:
+            - Function calls → synchronous_call messages
+            - Data writes → synchronous_write messages
+            - Returns → synchronous_return messages
+            
+            Generate scenarios:
+            - Success path (valid inputs)
+            - Failure path (invalid inputs)
+            
+            Follow TEMPLATE_05_sequence_diagram.yaml
+          
+          scenarios_required:
+            - "success_path"
+            - "primary_failure_path"
+            
+        # --- Parametric Diagram ---
+        - sub_phase: 4e
+          name: "Parametric Diagram"
+          output: "06_parametric_diagram.yaml"
+          
+          prompt_strategy: |
+            Extract mathematical constraints:
+            - sizeof() calculations → constraint blocks
+            - Performance timing → budgets
+            - Array dimensions → constraints
+            - Physical ranges/limits → constraints
+            
+            Follow TEMPLATE_06_parametric_diagram.yaml
+          
+          constraint_types:
+            - "structural: size/alignment calculations"
+            - "performance: timing/memory budgets"
+            - "mathematical: formulas/equations"
+            
+        # --- Allocations ---
+        - sub_phase: 4f
+          name: "Allocations"
+          output: "07_allocations.yaml"
+          
+          prompt_strategy: |
+            Map logical to physical:
+            - Functions → processor (usually TBD at module level)
+            - Global data → RAM sections (.data/.bss)
+            - Const data → ROM sections (.rodata)
+            - Code → Flash/ROM (.text)
+            - Local variables → stack
+            
+            Follow TEMPLATE_07_allocations.yaml
+          
+          allocation_note: |
+            Many allocations marked TBD - system-level decision.
+            Module-level can infer from code characteristics.
+    
+    validation:
+      
+      validation_strategy: "Validate each diagram after generation"
+      
+      validation_sequence:
+        - validate: "02_block_definition_diagram.yaml"
+          criteria: "All blocks identified, operations correct, values complete"
+          
+        - validate: "03_activity_diagram.yaml"
+          criteria: "Activity flow matches code flow, all source lines mapped"
+          
+        - validate: "04_state_machine_diagram.yaml"
+          criteria: "Correct determination of applicable/not_applicable"
+          
+        - validate: "05_sequence_diagram.yaml"
+          criteria: "Message sequences match function calls"
+          
+        - validate: "06_parametric_diagram.yaml"
+          criteria: "Calculations correct, equations valid"
+          
+        - validate: "07_allocations.yaml"
+          criteria: "Memory allocations reasonable, TBD marked appropriately"
+      
+      validation_actions: [accept, reject, modify]
+      validation_tracking: "validation_log.yaml"
+    
+    coherency_check:
+      
+      cross_diagram_checks:
+        - check: blocks_referenced_exist
+          description: "Activity ACT-FuncX references BLK-FuncX which exists in BDD"
+          
+        - check: operations_have_activities
+          description: "Block operations have corresponding activity diagrams"
+          
+        - check: sequence_lifelines_are_blocks
+          description: "Sequence diagram lifelines reference valid blocks"
+          
+        - check: parametric_constraints_reference_blocks
+          description: "Constraint blocks reference structure sizes from BDD"
+          
+        - check: allocations_reference_blocks
+          description: "Allocations map valid block IDs to resources"
+      
+      code_vs_model_checks:
+        - check: activity_flow_matches_code_flow
+          method: "Compare control flow graph from code to activity diagram"
+          
+        - check: structure_sizes_match
+          method: "sizeof() in code vs. size in BDD and parametric"
+          
+        - check: function_signatures_match
+          method: "Code parameters vs. block operations parameters"
+    
+    traceability_update:
+      
+      action: "Update 01_requirements_diagram.yaml again"
+      
+      update_type: ADD_DESIGN_TRACEABILITY
+      
+      fields_updated:
+        - field: "requirements[].satisfiedBy"
+          value: "BLK-XXX, ACT-XXX IDs from design diagrams"
+          description: "Link requirements to design elements"
+          
+      example: |
+        Before (after phase 3):
+          satisfiedBy: []
+          verifiedBy: [VER-REQ-001]
+        
+        After (phase 4):
+          satisfiedBy: [BLK-WindSet, ACT-WindSet]
+          verifiedBy: [VER-REQ-001]
+      
+      traceability_rules:
+        - "Functional requirement → function block + activity"
+        - "Interface requirement → value_type blocks"
+        - "Performance requirement → parametric constraints"
+  
+  outputs:
+    - artifact: 02_block_definition_diagram.yaml
+      status: NEW
+      
+    - artifact: 03_activity_diagram.yaml
+      status: NEW
+      
+    - artifact: 04_state_machine_diagram.yaml
+      status: NEW
+      note: "May have status=not_applicable if stateless"
+      
+    - artifact: 05_sequence_diagram.yaml
+      status: NEW
+      
+    - artifact: 06_parametric_diagram.yaml
+      status: NEW
+      
+    - artifact: 07_allocations.yaml
+      status: NEW
+      
+    - artifact: 01_requirements_diagram.yaml
+      status: UPDATED
+      update_type: ADD_DESIGN_TRACEABILITY
+      fields_changed: "satisfiedBy"
+  
+  configuration_options:
+    processing_mode: configurable
+    options:
+      - option: sequential
+        description: "Generate one diagram → validate → next diagram"
+        
+      - option: batch
+        description: "Generate all diagrams → validate all"
+
+# ============================================================================
+# PHASE 5: TEST GENERATION
+# ============================================================================
+
+phase_5_test_generation:
+  
+  phase_number: 5
+  phase_name: "Test Case Generation"
+  
+  objective: |
+    Generate detailed test specifications implementing verification requirements.
+    Create executable test cases in Unity C framework.
+  
+  inputs:
+    - artifact: 01_requirements_diagram.yaml
+      status: updated_with_complete_traceability
+      
+    - artifact: 01b_verification_requirements.yaml
+      status: validated
+      usage: "Test cases implement verification requirements"
+      
+  process:
+    
+    ai_engine:
+      name: "AI Test Case Generator"
+      type: "Claude Sonnet 4.5 with test generation prompt"
+      
+      prompt_strategy:
+        system_prompt: |
+          You are a test engineer creating detailed test specifications.
+          Generate test cases following TEMPLATE_08_test_cases.yaml.
+          Each verification requirement needs ≥1 test case.
+        
+        user_prompt_template: |
+          Generate test cases for:
+          
+          Verification Requirements:
+          {01b_verification_requirements}
+          
+          For each verification requirement:
+          - Create test case with unique ID (TC-XXX)
+          - Define test steps (numbered, detailed)
+          - Specify test data
+          - Define assertions
+          - Define pass criteria
+          - Link to verification requirement (implements field)
+          - Link to requirement (verifies field)
+          
+          Include unit tests, integration tests, code reviews as needed.
+          Use TEMPLATE_08_test_cases.yaml structure.
+      
+      test_generation_rules:
+        - "One verification requirement → ≥1 test case"
+        - "Critical requirements → multiple test cases (positive/negative)"
+        - "Interface requirements → code review + unit test"
+        - "Generate test suites to organize related tests"
+        
+    validation:
+      validation_point: "After AI generates 08_test_cases.yaml"
+      validation_type: human_review
+      validation_granularity: any_data
+      
+      validation_criteria:
+        checklist:
+          - "Every verification requirement has ≥1 test case"
+          - "Test steps clear and executable"
+          - "Test data specified"
+          - "Assertions measurable"
+          - "Pass criteria objective"
+          - "Traceability complete (implements/verifies)"
+          - "Coverage = 100% of requirements"
+          
+    coherency_check:
+      checks:
+        - check: all_verification_requirements_covered
+          description: "Every VER-REQ has implementing test case"
+          
+        - check: test_traceability_valid
+          description: "implements/verifies fields reference valid IDs"
+          
+        - check: test_framework_appropriate
+          description: "Unity for C code, appropriate framework selected"
+    
+    unit_test_code_generation:
+      
+      optional_step: true
+      description: "Generate actual Unity C test files from test cases"
+      
+      inputs:
+        - artifact: 08_test_cases.yaml
+          usage: "Source of test specifications"
+          
+        - artifact: 09_generation_config.yaml
+          usage: "Templates for Unity test generation"
+          
+      output:
+        - artifact: test_Module.c
+          format: "C source file"
+          framework: Unity
+          content: "Executable unit tests"
+          
+      generation_process:
+        - "Read 08_test_cases.yaml"
+        - "For each test case, generate Unity TEST() function"
+        - "Translate test steps to C code"
+        - "Translate assertions to TEST_ASSERT_*()"
+        - "Generate setUp()/tearDown() if needed"
+        - "Generate main() with RUN_TEST() calls"
+  
+  outputs:
+    - artifact: 08_test_cases.yaml
+      status: NEW
+      description: "Complete test specifications with traceability"
+      
+    - artifact: test_Module.c
+      status: OPTIONAL
+      description: "Executable Unity C tests (if code generation enabled)"
+
+# ============================================================================
+# PHASE 6: SMART TOOLS (FUTURE WORK)
+# ============================================================================
+
+phase_6_smart_tools:
+  
+  phase_number: 6
+  phase_name: "Smart Tools - Bidirectional Sync and Change Management"
+  
+  status: FUTURE_WORK
+  
+  objective: |
+    Enable bidirectional synchronization between code and models.
+    Handle requirement changes, design changes, code modifications.
+    Maintain consistency across all artifacts.
+  
+  capabilities:
+    
+    # --- Module Regeneration ---
+    - capability: module_regeneration
+      description: "Regenerate code from YAML or YAML from changed code"
+      status: TO_BE_ANALYZED
+      
+      scenarios:
+        - scenario: forward_generation
+          trigger: "YAML models modified by human"
+          action: "Generate C code from YAMLs"
+          authority: "YAML models"
+          output: "Module.c and Module.h"
+          risk: "Overwrites original code"
+          
+        - scenario: reverse_regeneration
+          trigger: "C code modified by human"
+          action: "Regenerate YAMLs from code"
+          authority: "C code"
+          output: "Updated YAML files"
+          risk: "Overwrites manual YAML edits"
+          
+        - scenario: conflict_detection
+          trigger: "Both YAML and code modified"
+          action: "Detect conflict, require human resolution"
+          detection_method: "Timestamps + coherency engine"
+          resolution: "Human chooses authoritative source"
+    
+    # --- Requirement Change Propagation ---
+    - capability: requirement_change_propagation
+      description: "Handle changes to requirements and propagate to design/code/tests"
+      status: TO_BE_DESIGNED
+      
+      change_types:
+        - change: requirement_added
+          example: "Add REQ-NEW-001: Module SHALL log errors"
+          
+          propagation_cascade:
+            - artifact: 02_block_definition_diagram.yaml
+              action: "Add logging function block"
+              automated: TBD
+              
+            - artifact: 03_activity_diagram.yaml
+              action: "Add error logging actions to algorithm"
+              automated: TBD
+              
+            - artifact: 01b_verification_requirements.yaml
+              action: "Add verification requirement for logging"
+              automated: "AI can propose, human validates"
+              
+            - artifact: 08_test_cases.yaml
+              action: "Add test case for log file verification"
+              automated: "AI can propose, human validates"
+              
+            - artifact: Module.c
+              action: "Implement logging code"
+              automated: NO
+              note: "Human implements or AI generates for review"
+        
+        - change: requirement_modified
+          example: "Change REQ-005: Wind entries from 8 to 16"
+          
+          propagation_cascade:
+            - artifact: 02_block_definition_diagram.yaml
+              action: "Update array size constant"
+              
+            - artifact: 06_parametric_diagram.yaml
+              action: "Recalculate structure sizes"
+              
+            - artifact: 08_test_cases.yaml
+              action: "Update boundary tests"
+              
+            - artifact: Module.h
+              action: "Change WIND_MAX_ENTRY_CNT to 16"
+        
+        - change: requirement_deleted
+          action: "Remove from requirements, flag orphaned design elements"
+    
+    # --- Design Change Propagation ---
+    - capability: design_change_propagation
+      description: "Handle design changes and propagate to code/tests"
+      status: TO_BE_DESIGNED
+      
+      change_types:
+        - change: algorithm_modified
+          example: "Change sorting algorithm in activity diagram"
+          
+          propagation_cascade:
+            - artifact: Module.c
+              action: "Reimplement function with new algorithm"
+              automated: NO
+              
+            - artifact: 06_parametric_diagram.yaml
+              action: "Update complexity analysis"
+              automated: "AI can analyze"
+              
+            - artifact: 08_test_cases.yaml
+              action: "Update performance tests"
+              automated: "AI can propose new tests"
+        
+        - change: interface_modified
+          example: "Add parameter to function"
+          
+          propagation_cascade:
+            - artifact: 05_sequence_diagram.yaml
+              action: "Update message parameters"
+              
+            - artifact: Module.h
+              action: "Update function signature"
+              
+            - artifact: 08_test_cases.yaml
+              action: "Update all test calls"
+    
+    # --- Coherency Engine for Change Detection ---
+    - capability: continuous_coherency_monitoring
+      description: "Detect inconsistencies introduced by changes"
+      status: TO_BE_IMPLEMENTED
+      
+      monitoring_strategy:
+        frequency: "After every file save"
+        scope: "All artifacts in module"
+        
+      discrepancy_detection:
+        - discrepancy: orphaned_design_element
+          example: "BLK-FunctionX satisfies REQ-005, but REQ-005 was deleted"
+          action: "Flag for human review"
+          
+        - discrepancy: missing_traceability
+          example: "New requirement added but no satisfiedBy links"
+          action: "Suggest design elements to create"
+          
+        - discrepancy: code_model_mismatch
+          example: "Code has 5 parameters, block operation shows 3"
+          action: "Flag discrepancy, propose sync direction"
+      
+      conflict_resolution:
+        authority_determination:
+          method: "Latest human modification timestamp"
+          fallback: "Ask human which is authoritative"
+          
+        merge_strategy:
+          - "If code newer: offer to regenerate YAML"
+          - "If YAML newer: offer to regenerate code"
+          - "If both changed: manual resolution required"
+  
+  # --- Subsystem Aggregation ---
+  subsystem_aggregation:
+    description: "Roll up module YAMLs to subsystem/system level"
+    status: TO_BE_ANALYZED_LATER
+    
+    challenge: "Reverse decomposition - infer system architecture from modules"
+    
+    note: |
+      This is future work. The workflow currently handles module-level
+      reverse engineering. Aggregating modules to subsystem/system level
+      requires additional analysis and design.
+    
+    approaches_to_explore:
+      - approach: bottom_up_inference
+        description: "Analyze module dependencies, infer subsystem structure from module relationships"
+        
+      - approach: requirement_rollup
+        description: "Aggregate module requirements to derive subsystem-level requirements"
+        
+      - approach: package_diagram_generation
+        description: "Create 00b_package_diagram.yaml showing module composition and dependencies"
+        note: "Currently placeholder - not generated in reverse engineering"
+        
+      - approach: interface_analysis
+        description: "Analyze cross-module interfaces to identify subsystem boundaries"
+        
+      - approach: functional_grouping
+        description: "Group modules by functional domain (sensing, control, actuation, etc.)"
+    
+    challenges_to_address:
+      - "How to identify subsystem boundaries from module dependencies?"
+      - "How to derive subsystem requirements from module requirements?"
+      - "How to handle circular dependencies between modules?"
+      - "How to represent cross-module data flows?"
+      - "How to maintain traceability across abstraction levels?"
+    
+    expected_outputs:
+      - "subsystem/00_metadata.yaml (subsystem-level)"
+      - "subsystem/00b_package_diagram.yaml (module relationships)"
+      - "subsystem/01_requirements_diagram.yaml (system requirements)"
+      - "subsystem/02_block_definition_diagram.yaml (subsystem architecture)"
+      - "Cross-module interface specifications"
+      - "System-level traceability matrix"

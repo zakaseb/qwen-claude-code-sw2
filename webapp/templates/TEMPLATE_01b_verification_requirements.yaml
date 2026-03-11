@@ -1,0 +1,330 @@
+﻿# ============================================================================
+# TEMPLATE: 01b_verification_requirements.yaml
+# Verification Requirements Template
+# ============================================================================
+# Purpose: Define HOW to verify each functional requirement
+# Usage: Copy this template and define verification methods for requirements
+# Dependencies: 01_requirements_diagram.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | list | dict
+# - Example values shown in [brackets]
+
+# ============================================================================
+# VERIFICATION REQUIREMENTS SECTION (MANDATORY)
+# ============================================================================
+
+verification_requirements:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # MANDATORY - Type: string - Format: "VER-REQ-<NUMBER>" - Example: "VER-REQ-001"
+    stereotype: verification_requirement  # MANDATORY - Type: string - Value: "verification_requirement"
+    name: ""  # MANDATORY - Type: string - Descriptive name
+    text: ""  # MANDATORY - Type: string - "SHALL verify that..." statement
+    
+    verifies: ""  # MANDATORY - Type: string OR list - Requirement ID(s) being verified
+    # Can be single: "REQ-MODULE-001"
+    # Or multiple: ["REQ-MODULE-001", "REQ-MODULE-002"]
+    
+    verification_method: ""  # MANDATORY - Type: string - Values: [unit_test, integration_test, system_test, code_review, analysis, inspection, demonstration]
+    test_type: ""  # MANDATORY - Type: string - Values: [functional, performance, stress, boundary, regression, smoke]
+    
+    verification_approach: ""  # MANDATORY - Type: string (multiline) - Step-by-step HOW to verify
+    # Use YAML multiline string with |
+    # Example:
+    # verification_approach: |
+    #   1. Setup test environment
+    #   2. Execute test steps
+    #   3. Verify results
+    
+    acceptance_criteria:  # MANDATORY - Type: list - What constitutes PASS
+      - ""  # Specific measurable criteria
+      # EXTENSIBLE: Add more criteria
+    
+    implementedBy:  # MANDATORY - Type: list - Test case IDs that implement this verification
+      - ""  # Example: "TC-001"
+      # EXTENSIBLE: Add test case IDs
+    
+    # OPTIONAL fields
+    test_approach: ""  # OPTIONAL - Type: string - Values: [black_box, white_box, gray_box, mock_verification]
+    priority: ""  # OPTIONAL - Type: string - Values: [critical, high, medium, low]
+    preconditions: ""  # OPTIONAL - Type: string - Setup required before verification
+    postconditions: ""  # OPTIONAL - Type: string - Expected state after verification
+    
+    test_data:  # OPTIONAL - Type: dict - Test data requirements
+      description: ""  # Type: string
+      source: ""  # Type: string - Where test data comes from
+      
+    tools_required:  # OPTIONAL - Type: list - Tools needed for verification
+      - ""  # Example: "Unity test framework"
+      # EXTENSIBLE: Add tools
+    
+    resources_required:  # OPTIONAL - Type: list - Resources needed
+      - ""  # Example: "Target hardware"
+      # EXTENSIBLE: Add resources
+    
+    estimated_duration: 0  # OPTIONAL - Type: number - Time to execute
+    estimated_duration_unit: ""  # OPTIONAL - Type: string - Example: "minutes", "hours"
+    
+    dependencies:  # OPTIONAL - Type: list - Other verifications that must pass first
+      - ""  # Example: "VER-REQ-001"
+      # EXTENSIBLE: Add dependencies
+    
+    risks:  # OPTIONAL - Type: list - Verification risks
+      - ""  # Example: "May require hardware not available"
+      # EXTENSIBLE: Add risks
+    
+    notes: ""  # OPTIONAL - Type: string - Additional information
+  
+  # EXTENSIBLE: Add more verification requirements by copying above block
+
+# ============================================================================
+# TRACEABILITY SECTION (MANDATORY)
+# ============================================================================
+
+traceability:  # MANDATORY
+  
+  # Verification → Test Cases (MANDATORY)
+  verification_to_test:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+    
+    - verification_requirement: ""  # MANDATORY - Type: string - Verification requirement ID
+      test_cases:  # MANDATORY - Type: list - Test case IDs
+        - ""  # Example: "TC-001"
+        # EXTENSIBLE: Add test case IDs
+    
+    # EXTENSIBLE: Add more mappings
+  
+  # Verification → Requirements (automatically derived from 'verifies' field)
+  verification_to_requirement:  # OPTIONAL - Type: list of dicts
+    
+    - verification: ""  # Type: string - Verification requirement ID
+      requirement: ""  # Type: string - Requirement ID
+      method: ""  # Type: string - Verification method used
+    
+    # EXTENSIBLE: Add mappings if not using 'verifies' field
+
+# ============================================================================
+# VERIFICATION METHODS CATALOG (OPTIONAL)
+# ============================================================================
+
+verification_methods:  # OPTIONAL - Type: dict - Define what each method means
+  
+  unit_test:  # OPTIONAL
+    description: "Test individual units/functions in isolation"
+    level: module
+    automation: high
+    typical_tools: ["Unity", "CppUTest", "Google Test"]
+    
+  integration_test:  # OPTIONAL
+    description: "Test interactions between integrated units/modules"
+    level: subsystem
+    automation: medium
+    typical_tools: ["Robot Framework", "pytest"]
+    
+  system_test:  # OPTIONAL
+    description: "Test complete system behavior"
+    level: system
+    automation: medium
+    typical_tools: ["Custom test harness", "Hardware-in-loop"]
+    
+  code_review:  # OPTIONAL
+    description: "Manual inspection of code/design"
+    level: any
+    automation: none
+    typical_tools: ["Gerrit", "GitHub PR", "Checklist"]
+    
+  analysis:  # OPTIONAL
+    description: "Mathematical or logical analysis"
+    level: any
+    automation: low
+    typical_tools: ["Static analyzer", "WCET tool"]
+    
+  inspection:  # OPTIONAL
+    description: "Visual inspection of artifacts"
+    level: any
+    automation: none
+    typical_tools: ["Checklist", "Standards document"]
+    
+  demonstration:  # OPTIONAL
+    description: "Show feature works by operating it"
+    level: system
+    automation: none
+    typical_tools: ["Live system", "Prototype"]
+  
+  # EXTENSIBLE: Add custom verification methods
+
+# ============================================================================
+# TEST TYPES CATALOG (OPTIONAL)
+# ============================================================================
+
+test_types:  # OPTIONAL - Type: dict - Define what each test type means
+  
+  functional:  # OPTIONAL
+    description: "Verify functional requirements"
+    focus: "Correct behavior"
+    
+  performance:  # OPTIONAL
+    description: "Verify timing, throughput, resource usage"
+    focus: "Non-functional performance"
+    
+  stress:  # OPTIONAL
+    description: "Test under extreme conditions"
+    focus: "System limits and robustness"
+    
+  boundary:  # OPTIONAL
+    description: "Test at input/output boundaries"
+    focus: "Edge cases and limits"
+    
+  regression:  # OPTIONAL
+    description: "Verify existing functionality not broken"
+    focus: "Prevent regressions"
+    
+  smoke:  # OPTIONAL
+    description: "Quick sanity check of basic functionality"
+    focus: "Major functions work"
+  
+  # EXTENSIBLE: Add custom test types
+
+# ============================================================================
+# VERIFICATION STRATEGY (OPTIONAL)
+# ============================================================================
+
+verification_strategy:  # OPTIONAL
+  
+  approach: ""  # OPTIONAL - Type: string - Overall verification approach
+  
+  levels:  # OPTIONAL - Type: list - Verification levels
+    - level: unit
+      methods: ["unit_test", "code_review"]
+      coverage_target: 100  # Type: number - Percentage
+      
+    - level: integration
+      methods: ["integration_test"]
+      coverage_target: 90
+      
+    - level: system
+      methods: ["system_test", "demonstration"]
+      coverage_target: 100
+    
+    # EXTENSIBLE: Add more levels
+  
+  coverage_criteria:  # OPTIONAL - Type: dict
+    statement_coverage: 0  # Type: number - Percentage target
+    branch_coverage: 0  # Type: number
+    function_coverage: 0  # Type: number
+    requirement_coverage: 0  # Type: number - Must be 100
+    
+  risk_based_testing:  # OPTIONAL - Type: dict
+    enabled: false  # Type: boolean
+    high_risk_requirements:  # Type: list
+      - ""  # Requirement IDs requiring extra verification
+    
+  automation:  # OPTIONAL - Type: dict
+    target_automation_percentage: 0  # Type: number
+    automated_methods: []  # Type: list
+    manual_methods: []  # Type: list
+
+# ============================================================================
+# VERIFICATION RESOURCES (OPTIONAL)
+# ============================================================================
+
+verification_resources:  # OPTIONAL
+  
+  test_frameworks:  # OPTIONAL - Type: list
+    - name: ""  # Type: string - Framework name
+      version: ""  # Type: string
+      purpose: ""  # Type: string - What it's used for
+    # EXTENSIBLE: Add frameworks
+  
+  test_environments:  # OPTIONAL - Type: list
+    - name: ""  # Type: string - Environment name
+      type: ""  # Type: string - Values: [simulated, hardware, hybrid]
+      description: ""  # Type: string
+    # EXTENSIBLE: Add environments
+  
+  test_data_sources:  # OPTIONAL - Type: list
+    - name: ""  # Type: string
+      type: ""  # Type: string - Values: [generated, recorded, synthetic]
+      location: ""  # Type: string
+    # EXTENSIBLE: Add data sources
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_verification_requirements: 0  # Type: number
+  
+  by_method:  # OPTIONAL
+    unit_test: 0
+    integration_test: 0
+    system_test: 0
+    code_review: 0
+    analysis: 0
+    inspection: 0
+    demonstration: 0
+  
+  by_type:  # OPTIONAL
+    functional: 0
+    performance: 0
+    stress: 0
+    boundary: 0
+    
+  requirements_covered: 0  # Type: number - How many requirements have verification
+  test_cases_generated: 0  # Type: number - Total test cases to be created
+  
+  coverage:  # OPTIONAL
+    percentage: 0  # Type: number - Requirements with verification / Total requirements
+    unit: percent
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+# EXTENSIBLE: Add project-specific sections
+custom_verification_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Verification requirements template - defines HOW to verify requirements"
+  
+  usage_instructions: |
+    1. Copy this template to your project
+    2. Rename to 01b_verification_requirements.yaml
+    3. For each requirement in 01_requirements_diagram.yaml:
+       - Create corresponding verification requirement
+       - Define verification method (test, review, analysis, etc.)
+       - Write step-by-step verification approach
+       - Define acceptance criteria (what is PASS)
+       - Link to test cases that will implement it
+    4. Complete traceability section
+    5. Update statistics
+  
+  verification_writing_guidelines:
+    - "Each requirement should have at least one verification requirement"
+    - "Verification approach must be detailed enough to implement"
+    - "Acceptance criteria must be measurable and objective"
+    - "Critical requirements may need multiple verification methods"
+    - "Consider both positive and negative test cases"
+  
+  common_verification_methods:
+    unit_test: "For individual functions and units"
+    integration_test: "For module interactions"
+    code_review: "For interface compliance, structure correctness"
+    analysis: "For performance constraints, timing analysis"
+    inspection: "For documentation, standards compliance"
+  
+  relationship_to_other_files:
+    requirements_diagram: "Source of requirements to verify"
+    test_cases: "Detailed implementation of verification approach"
+    activity_diagram: "Shows behavior to be verified"
+    parametric_diagram: "Shows constraints to be verified"

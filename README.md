@@ -10,6 +10,7 @@ This setup allows you to run a local LLM (Qwen3-Coder-30B-A3B-Instruct) using ll
 
 - **Local Execution**: Run code generation models entirely locally without internet access after initial download
 - **Claude Code API compatible** through litellm proxy
+- **C-to-SysML MBSE Pipeline**: Web UI that reverse-engineers C source code into 10+ SysML YAML artifacts following a structured MBSE workflow (metadata, requirements, verification, block definition, activity, state machine, sequence, parametric, allocations, test cases, generation config). All artifacts follow standardized templates from PROCESS_MANUAL.
 
 ## What does not work
 - Think, Ultrathing etc. reasoning_effort is currently dropped as non-thinking model is currently used. To use a Qwen thinking/non-thinking model a litellm hook needs to be written to add ` /think`  ` /nothink` tags to requests. Or wait until litellm support Qwen API.
@@ -45,6 +46,20 @@ For offline mode (no internet required):
 ./run_offline.sh
 ```
 
+### Run with Web UI (C-to-SysML Pipeline)
+
+```bash
+./run_web.sh
+```
+
+Then open `http://localhost:8080` in your browser.
+
+1. Paste (or upload) your C source code
+2. Click **Generate SysML Artifacts**
+3. Watch the pipeline generate 11 YAML files in sequence, each following a specific MBSE template
+4. Click any file in the pipeline to preview its contents
+5. Click **Download All (ZIP)** to download all generated artifacts
+
 ## Testing
 
 After running, you can test the setup with:
@@ -75,3 +90,4 @@ If you encounter issues:
 3. Verify network connectivity during initial model download
 4. Make sure you're running with appropriate permissions
 5. If you get connection error 500, verify if llama-server is still running by using `./view_llama_server.sh` script. Sometimes it crashes upon tool calling.
+6. For C-to-SysML web UI: if generation hangs or times out, run `./view_llama_server.sh` from another terminal to inspect the llama-server and litellm panes. Ensure the model has finished loading (look for "slot" or "loaded" in llama-server output) before generating.
