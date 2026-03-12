@@ -10,6 +10,8 @@
   --error: #f85149;
   --warning: #d29922;
   --active-glow: rgba(88,166,255,0.15);
+  --green: #3fb950;
+  --green-hover: #56d364;
 }
 
 * { box-sizing: border-box; }
@@ -46,6 +48,37 @@ section h2 {
 }
 
 .hidden { display: none !important; }
+
+.hint { color: var(--muted); font-size: 0.85rem; margin: 0 0 1rem 0; }
+
+/* ---------- Mode Selector ---------- */
+.mode-selector {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mode-btn {
+  flex: 1;
+  background: var(--surface);
+  border: none;
+  color: var(--muted);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s, color 0.2s;
+}
+.mode-btn:not(:last-child) { border-right: 1px solid var(--border); }
+.mode-btn:hover { color: var(--text); }
+.mode-btn.active { background: var(--accent); color: var(--bg); }
+
+.mode-panel { display: none; }
+.mode-panel.active { display: block; }
 
 /* ---------- Tabs ---------- */
 .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
@@ -93,6 +126,14 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent); }
 .upload-zone p { margin: 0; color: var(--muted); }
 
+.upload-status {
+  font-size: 0.85rem;
+  margin: 0.75rem 0;
+  min-height: 1.2rem;
+}
+.upload-status.ok { color: var(--success); }
+.upload-status.err { color: var(--error); }
+
 /* ---------- Buttons ---------- */
 .primary {
   display: inline-block;
@@ -108,8 +149,12 @@ textarea:focus { outline: none; border-color: var(--accent); }
   font-family: inherit;
 }
 .primary:hover { background: var(--accent-hover); }
-#generate-btn { margin-top: 1rem; }
-#generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.primary.accent-green { background: var(--green); }
+.primary.accent-green:hover { background: var(--green-hover); }
+
+#generate-yaml-btn { margin-top: 1rem; }
+#generate-c-upload-btn { margin-top: 1rem; }
 
 /* ---------- Pipeline Progress ---------- */
 .pipeline-progress { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -179,7 +224,7 @@ textarea:focus { outline: none; border-color: var(--accent); }
 .preview-tab:hover { color: var(--text); border-color: var(--accent); }
 .preview-tab.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
 
-#yaml-preview {
+.code-preview {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 6px;
