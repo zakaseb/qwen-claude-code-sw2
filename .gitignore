@@ -1,0 +1,20 @@
+# IDE
+.idea/
+.cursor/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Source templates (originals live outside the repo)
+/home/precision7780/Downloads/TEMPLATE_02_block_definition_diagram/

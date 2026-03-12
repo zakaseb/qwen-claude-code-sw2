@@ -1,6 +1,6 @@
 # Qwen Claude Code Local Development Environment
 
-This repository provides a Docker-based setup for running the Qwen3-Coder-30B-A3B-Instruct model with Claude Code integration.
+This repository provides a localized Docker-based setup for running the Qwen3-Coder-30B-A3B-Instruct model with Claude Code integration.
 
 ## Overview
 
