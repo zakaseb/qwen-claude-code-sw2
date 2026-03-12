@@ -50,7 +50,7 @@
   });
 
   // C file upload
-  uploadZoneC.addEventListener("click", function () { fileInputC.click(); });
+  uploadZoneC.addEventListener("click", function (e) { if (e.target !== fileInputC) fileInputC.click(); });
   uploadZoneC.addEventListener("dragover", function (e) { e.preventDefault(); uploadZoneC.classList.add("dragover"); });
   uploadZoneC.addEventListener("dragleave", function () { uploadZoneC.classList.remove("dragover"); });
   uploadZoneC.addEventListener("drop", function (e) {
@@ -202,7 +202,7 @@
   var generateCUploadBtn = document.getElementById("generate-c-upload-btn");
   var uploadedYamlFile = null;
 
-  uploadZoneYaml.addEventListener("click", function () { fileInputYaml.click(); });
+  uploadZoneYaml.addEventListener("click", function (e) { if (e.target !== fileInputYaml) fileInputYaml.click(); });
   uploadZoneYaml.addEventListener("dragover", function (e) { e.preventDefault(); uploadZoneYaml.classList.add("dragover"); });
   uploadZoneYaml.addEventListener("dragleave", function () { uploadZoneYaml.classList.remove("dragover"); });
   uploadZoneYaml.addEventListener("drop", function (e) {
