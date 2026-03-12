@@ -15,6 +15,3 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
-
-# Source templates (originals live outside the repo)
-/home/precision7780/Downloads/TEMPLATE_02_block_definition_diagram/
