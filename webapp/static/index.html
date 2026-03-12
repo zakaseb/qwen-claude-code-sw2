@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C → SysML MBSE Pipeline</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>C → SysML MBSE Pipeline</h1>
+    <p class="tagline">Reverse-engineer C code into 10+ SysML YAML artifacts · Fully local, zero data leakage</p>
+  </header>
+
+  <main>
+    <section class="input-section">
+      <h2>Input C Code</h2>
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="paste">Paste</button>
+        <button type="button" class="tab" data-tab="upload">Upload</button>
+      </div>
+      <div class="tab-panel active" id="panel-paste">
+        <textarea id="c-code" placeholder="Paste your C source code here (structs, functions, enums, etc.)..." rows="14"></textarea>
+      </div>
+      <div class="tab-panel" id="panel-upload">
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="file-input" accept=".c,.h" hidden>
+          <p>Drop a .c or .h file here, or click to browse</p>
+        </div>
+      </div>
+      <button type="button" id="generate-btn" class="primary">Generate SysML Artifacts</button>
+    </section>
+
+    <section class="pipeline-section hidden" id="pipeline-section">
+      <h2>Generation Pipeline</h2>
+      <div id="pipeline-progress" class="pipeline-progress"></div>
+      <div class="pipeline-actions hidden" id="pipeline-actions">
+        <button type="button" id="download-all-btn" class="primary">Download All (ZIP)</button>
+      </div>
+    </section>
+
+    <section class="preview-section hidden" id="preview-section">
+      <h2 id="preview-title">Preview</h2>
+      <div class="preview-tabs" id="preview-tabs"></div>
+      <pre id="yaml-preview"></pre>
+    </section>
+  </main>
+
+  <footer>
+    <p>Runs entirely locally. No external API calls.</p>
+  </footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>

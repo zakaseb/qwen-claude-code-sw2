@@ -1,0 +1,348 @@
+# ============================================================================
+# TEMPLATE: 09_generation_config.yaml
+# Generation Configuration Template
+# ============================================================================
+# Purpose: Configure output generation - code, docs, XMI, diagrams, build
+# Usage: Copy this template and configure generation for your project
+# Dependencies: All previous YAML diagrams
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+
+# ============================================================================
+# GENERATION SECTION (MANDATORY)
+# ============================================================================
+
+generation:  # MANDATORY
+  
+  # ===== CODE GENERATION =====
+  code_generation:  # OPTIONAL
+    
+    enabled: true  # MANDATORY - Type: boolean
+    language: ""  # MANDATORY if enabled - Type: string - Example: "C", "C++", "Python"
+    standard: ""  # OPTIONAL - Example: "C99", "C++17"
+    
+    output_structure:  # MANDATORY if enabled
+      base_directory: ""  # Example: "../src/module_name"
+      header_directory: ""  # Example: "../src/module_name"
+      implementation_directory: ""  # Example: "../src/module_name"
+      test_directory: ""  # Example: "../test/module_name"
+    
+    files:  # MANDATORY if enabled - Type: list of dicts - EXTENSIBLE
+      
+      - file_type: header  # Type: string - Values: [header, implementation, unit_test]
+        filename: ""  # Example: "Module.h"
+        source_model: ""  # YAML file - Example: "02_block_definition_diagram.yaml"
+        template: ""  # Template name - Example: "c_header_template"
+        
+        generation_rules:  # OPTIONAL - Type: list of dicts
+          - rule: ""  # Example: "generate_includes", "generate_structures"
+            # Rule-specific parameters
+          # EXTENSIBLE
+      
+      # EXTENSIBLE: Add more files
+    
+    compiler_settings:  # OPTIONAL
+      compiler: ""  # Example: "gcc", "clang"
+      flags: []  # Type: list - Compiler flags
+      
+      misra_compliance:  # OPTIONAL
+        enabled: false
+        checker: ""  # Example: "cppcheck"
+        rules: ""  # Example: "MISRA-C-2012"
+    
+    code_style:  # OPTIONAL
+      indent: 2  # Number of spaces
+      indent_type: spaces  # Values: [spaces, tabs]
+      line_length: 120
+      braces: same_line  # Values: [same_line, next_line]
+      pointer_alignment: right  # Values: [left, right]
+  
+  # ===== DOCUMENTATION GENERATION =====
+  documentation_generation:  # OPTIONAL
+    
+    enabled: true  # MANDATORY - Type: boolean
+    
+    documents:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      
+      - document_type: ""  # Type: string - Values: [low_level_design, requirements_specification, test_plan, interface_control_document, user_manual]
+        filename: ""  # Example: "Module_LLD.md"
+        format: ""  # Type: string - Values: [markdown, pdf, html, docx]
+        
+        source_models: []  # Type: list - YAML files to include
+        
+        sections:  # OPTIONAL - Type: list of dicts
+          - section: ""  # Section name
+            include: []  # What to include
+            show_traceability: false  # OPTIONAL
+          # EXTENSIBLE
+        
+        output_directory: ""  # Example: "../docs/design"
+      
+      # EXTENSIBLE: Add documents
+    
+    pdf_generation:  # OPTIONAL
+      enabled: false
+      tool: ""  # Example: "pandoc"
+      options: []  # Type: list
+  
+  # ===== XMI EXPORT =====
+  xmi_export:  # OPTIONAL
+    
+    enabled: false  # MANDATORY - Type: boolean
+    version: ""  # Example: "XMI_2.5.1"
+    sysml_profile: ""  # Example: "SysML_1.6"
+    
+    target_tools:  # OPTIONAL - Type: list of dicts
+      - tool: ""  # Example: "Papyrus", "Cameo_Systems_Modeler"
+        version: ""
+        output_file: ""
+        options: {}  # Tool-specific options
+      # EXTENSIBLE
+    
+    output_directory: ""
+    
+    export_elements: []  # Type: list - What to export
+    
+    traceability:  # OPTIONAL
+      export_relationships: true
+      include_rationale: true
+  
+  # ===== DIAGRAM GENERATION =====
+  diagram_generation:  # OPTIONAL
+    
+    enabled: false  # MANDATORY - Type: boolean
+    format: ""  # Type: string - Values: [mermaid, plantuml, graphviz]
+    
+    diagrams:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      
+      - diagram_type: ""  # Example: "requirements_diagram", "block_definition_diagram"
+        source: ""  # YAML file
+        output_file: ""  # Example: "requirements.mmd"
+        layout: ""  # OPTIONAL
+        generate: true  # Type: boolean
+        note: ""  # OPTIONAL
+      
+      # EXTENSIBLE: Add diagrams
+    
+    output_directory: ""
+    
+    rendering:  # OPTIONAL
+      tool: ""  # Example: "mermaid-cli"
+      output_formats: []  # Example: [svg, png]
+      theme: default
+  
+  # ===== REVERSE ENGINEERING =====
+  reverse_engineering:  # OPTIONAL
+    
+    method: ""  # Type: string - Values: [manual, automated, hybrid]
+    
+    tools:  # OPTIONAL - Type: list of dicts
+      - name: ""
+        purpose: ""
+        version: ""
+      # EXTENSIBLE
+    
+    extraction_targets: []  # Type: list
+    
+    validation:  # OPTIONAL
+      cross_reference_code: true
+      manual_review_required: true
+      confidence_reporting: true
+  
+  # ===== VALIDATION RULES =====
+  validation:  # OPTIONAL
+    
+    enabled: true  # MANDATORY - Type: boolean
+    
+    checks:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      
+      - check_type: ""  # Example: "requirement_satisfaction"
+        description: ""
+        severity: ""  # Values: [error, warning, info]
+        target_coverage: 0  # OPTIONAL - For coverage checks
+      
+      # EXTENSIBLE: Add checks
+    
+    reports:  # OPTIONAL - Type: list of dicts
+      - report_type: ""
+        output_file: ""
+        format: ""  # Values: [txt, csv, html, json]
+      # EXTENSIBLE
+
+# ============================================================================
+# BUILD SYSTEM INTEGRATION (OPTIONAL)
+# ============================================================================
+
+build_integration:  # OPTIONAL
+  
+  makefile:  # OPTIONAL
+    enabled: false
+    filename: "Makefile"
+    
+    targets:  # Type: list of dicts
+      - target: ""
+        dependencies: []
+        sources: []  # OPTIONAL
+        output: ""  # OPTIONAL
+        command: ""  # OPTIONAL
+      # EXTENSIBLE
+  
+  cmake:  # OPTIONAL
+    enabled: false
+    filename: "CMakeLists.txt"
+    minimum_version: ""
+    
+    project:
+      name: ""
+      version: ""
+      languages: []
+    
+    options: {}  # Build options
+  
+  ci_cd:  # OPTIONAL
+    enabled: false
+    platform: ""  # Example: "generic", "GitHub Actions", "Jenkins"
+    
+    pipeline_stages:  # Type: list of dicts
+      - stage: ""
+        actions: []
+      # EXTENSIBLE
+
+# ============================================================================
+# TEMPLATES (OPTIONAL)
+# ============================================================================
+
+templates:  # OPTIONAL
+  
+  c_header_template: |
+    /*
+     * {filename}
+     * Generated from: {model_id}
+     * Date: {generation_date}
+     */
+    
+    #ifndef {include_guard}
+    #define {include_guard}
+    
+    {includes}
+    {constants}
+    {structures}
+    {function_prototypes}
+    
+    #endif
+  
+  # EXTENSIBLE: Add custom templates
+
+# ============================================================================
+# OUTPUT MANIFEST (OPTIONAL)
+# ============================================================================
+
+output_manifest:  # OPTIONAL
+  
+  code_files: []  # Type: list - Generated code files
+  documentation_files: []  # Type: list
+  diagram_files: []  # Type: list
+  xmi_files: []  # Type: list
+  build_files: []  # Type: list
+  validation_files: []  # Type: list
+
+# ============================================================================
+# GENERATION METADATA (OPTIONAL)
+# ============================================================================
+
+generation_metadata:  # OPTIONAL
+  model_version: ""
+  generation_tool: ""
+  generation_tool_version: ""
+  supported_diagrams: []
+  
+  quality_checks:
+    traceability_validation: enabled
+    consistency_validation: enabled
+    completeness_validation: enabled
+  
+  notes: []
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_output_files: 0
+  code_files: 0
+  documentation_files: 0
+  diagram_files: 0
+  xmi_files: 0
+  build_files: 0
+  validation_files: 0
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+custom_generation_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Generation configuration template - controls output generation"
+  
+  usage_instructions: |
+    1. Copy this template
+    2. Rename to 09_generation_config.yaml
+    3. Enable desired generation types:
+       - code_generation (C/C++/Python code)
+       - documentation_generation (Markdown/PDF docs)
+       - xmi_export (for SysML tools)
+       - diagram_generation (Mermaid/PlantUML)
+    4. Configure output directories
+    5. Define file generation rules
+    6. Setup build integration if needed
+    7. Configure validation rules
+    8. Define templates for code generation
+  
+  generation_types:
+    code: "Generate source code from models"
+    documentation: "Generate design documents"
+    xmi: "Export to SysML modeling tools"
+    diagrams: "Generate visual diagrams"
+    build: "Generate build system files"
+  
+  typical_outputs:
+    embedded_c:
+      - "Header files (.h)"
+      - "Implementation files (.c)"
+      - "Unit test files (test_*.c)"
+      - "Makefile or CMakeLists.txt"
+      - "Low-level design document"
+    
+    general:
+      - "Requirements specification"
+      - "Test plan"
+      - "Interface control document"
+      - "XMI files for tool import"
+      - "Mermaid diagrams"
+  
+  best_practices:
+    - "Generate only what's needed"
+    - "Keep templates simple and maintainable"
+    - "Validate generated output"
+    - "Version control generated files appropriately"
+    - "Document generation assumptions"
+    - "Test generated code before integration"
+  
+  common_mistakes:
+    - "Over-generating (too many files)"
+    - "Missing validation rules"
+    - "Hardcoded paths (use relative)"
+    - "No templates for custom generation"
+    - "Missing build integration"

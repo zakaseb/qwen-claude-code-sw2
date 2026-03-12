@@ -1,0 +1,287 @@
+﻿# ============================================================================
+# TEMPLATE: 01_requirements_diagram.yaml
+# Requirements Diagram Template
+# ============================================================================
+# Purpose: Define all requirements and traceability relationships
+# Usage: Copy this template and fill in requirements for your module
+# Dependencies: 00_metadata.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | list | dict
+# - Example values shown in [brackets]
+
+# ============================================================================
+# REQUIREMENTS SECTION (MANDATORY)
+# ============================================================================
+
+requirements:  # MANDATORY
+  
+  # ===== FUNCTIONAL REQUIREMENTS =====
+  functional:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Type: string - Format: "REQ-<MODULE>-<NUMBER>" - Example: "REQ-WIND-001"
+      stereotype: requirement  # MANDATORY - Type: string - Value: "requirement"
+      name: ""  # MANDATORY - Type: string - Short descriptive name
+      text: ""  # MANDATORY - Type: string - SHALL statement - Example: "The module SHALL..."
+      type: functional  # MANDATORY - Type: string - Value: "functional"
+      priority: ""  # MANDATORY - Type: string - Values: [critical, high, medium, low]
+      
+      rationale: ""  # OPTIONAL - Type: string - Why this requirement exists
+      note: ""  # OPTIONAL - Type: string - Additional information
+      
+      relationships:  # MANDATORY
+        satisfiedBy:  # MANDATORY - Type: list - Design elements satisfying this requirement
+          - ""  # Example: "BLK-FunctionName", "ACT-AlgorithmName"
+          # EXTENSIBLE: Add more design elements
+          
+        verifiedBy:  # MANDATORY - Type: list - Verification requirements
+          - ""  # Example: "VER-REQ-001"
+          # EXTENSIBLE: Add more verification requirements
+          
+        derivedFrom:  # OPTIONAL - Type: list - Parent requirements
+          - ""  # Example: "SYS-REQ-100"
+          # EXTENSIBLE: Add parent requirements
+          
+        refines:  # OPTIONAL - Type: list - Requirements this refines
+          - ""  # Example: "REQ-PARENT-001"
+          
+        traces:  # OPTIONAL - Type: list - Generic trace relationships
+          - ""  # Example: "SPEC-001"
+    
+    # EXTENSIBLE: Add more functional requirements by copying above block
+  
+  # ===== PERFORMANCE REQUIREMENTS =====
+  performance:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Format: "REQ-<MODULE>-PERF-<NUMBER>"
+      stereotype: requirement  # MANDATORY
+      name: ""  # MANDATORY
+      text: ""  # MANDATORY - SHALL statement with measurable criteria
+      type: performance  # MANDATORY - Value: "performance"
+      priority: ""  # MANDATORY
+      
+      metric: ""  # OPTIONAL - Type: string - Example: "execution_time"
+      target_value: 0  # OPTIONAL - Type: number
+      unit: ""  # OPTIONAL - Type: string - Example: "milliseconds"
+      
+      relationships:  # MANDATORY
+        satisfiedBy: []  # MANDATORY
+        verifiedBy: []  # MANDATORY
+    
+    # EXTENSIBLE: Add more performance requirements
+  
+  # ===== INTERFACE REQUIREMENTS =====
+  interface:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Format: "REQ-<MODULE>-INTF-<NUMBER>"
+      stereotype: requirement  # MANDATORY
+      name: ""  # MANDATORY
+      text: ""  # MANDATORY
+      type: interface  # MANDATORY - Value: "interface"
+      priority: ""  # MANDATORY
+      
+      interface_type: ""  # OPTIONAL - Type: string - Values: [data, control, hardware, software]
+      
+      relationships:  # MANDATORY
+        satisfiedBy: []  # MANDATORY
+        verifiedBy: []  # MANDATORY
+    
+    # EXTENSIBLE: Add more interface requirements
+  
+  # ===== SAFETY REQUIREMENTS =====
+  safety:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Format: "REQ-<MODULE>-SAFE-<NUMBER>"
+      stereotype: requirement  # MANDATORY
+      name: ""  # MANDATORY
+      text: ""  # MANDATORY
+      type: safety  # MANDATORY - Value: "safety"
+      priority: critical  # MANDATORY - Safety requirements typically critical
+      
+      safety_level: ""  # OPTIONAL - Type: string - Example: "ASIL-D", "DAL-A"
+      hazard_reference: ""  # OPTIONAL - Type: string - Linked hazard
+      
+      relationships:  # MANDATORY
+        satisfiedBy: []  # MANDATORY
+        verifiedBy: []  # MANDATORY
+    
+    # EXTENSIBLE: Add more safety requirements
+  
+  # ===== SECURITY REQUIREMENTS =====
+  security:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - id: ""  # MANDATORY - Format: "REQ-<MODULE>-SEC-<NUMBER>"
+      stereotype: requirement  # MANDATORY
+      name: ""  # MANDATORY
+      text: ""  # MANDATORY
+      type: security  # MANDATORY - Value: "security"
+      priority: ""  # MANDATORY
+      
+      security_property: ""  # OPTIONAL - Type: string - Values: [confidentiality, integrity, availability]
+      
+      relationships:  # MANDATORY
+        satisfiedBy: []  # MANDATORY
+        verifiedBy: []  # MANDATORY
+    
+    # EXTENSIBLE: Add more security requirements
+  
+  # EXTENSIBLE: Add custom requirement types
+  custom_type:  # OPTIONAL - Define your own requirement categories
+    - id: ""
+      stereotype: requirement
+      name: ""
+      text: ""
+      type: ""  # Your custom type
+      priority: ""
+      relationships:
+        satisfiedBy: []
+        verifiedBy: []
+
+# ============================================================================
+# TRACEABILITY SECTION (MANDATORY)
+# ============================================================================
+
+traceability:  # MANDATORY
+  
+  # Requirements → Design (MANDATORY)
+  requirement_to_design:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+    
+    - requirement: ""  # MANDATORY - Type: string - Requirement ID
+      design_elements:  # MANDATORY - Type: list
+        - ""  # Example: "BLK-FunctionName"
+        # EXTENSIBLE: Add design elements
+      rationale: ""  # OPTIONAL - Type: string - Why this satisfies requirement
+    
+    # EXTENSIBLE: Add more requirement-to-design mappings
+  
+  # Requirements → Verification (MANDATORY)
+  requirement_to_verification:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+    
+    - requirement: ""  # MANDATORY - Type: string - Requirement ID
+      verification: ""  # MANDATORY - Type: string - Verification requirement ID
+    
+    # EXTENSIBLE: Add more requirement-to-verification mappings
+  
+  # Requirements → Requirements (OPTIONAL)
+  requirement_to_requirement:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+    
+    - parent: ""  # Type: string - Parent requirement ID
+      child: ""  # Type: string - Child requirement ID
+      relationship_type: ""  # Type: string - Values: [derives, refines, traces]
+    
+    # EXTENSIBLE: Add more requirement relationships
+
+# ============================================================================
+# REQUIREMENT GROUPS (OPTIONAL)
+# ============================================================================
+
+requirement_groups:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - name: ""  # Type: string - Group name
+    requirements:  # Type: list
+      - ""  # Requirement IDs in this group
+      # EXTENSIBLE: Add requirement IDs
+    description: ""  # Type: string - Purpose of this group
+  
+  # EXTENSIBLE: Add more requirement groups
+
+# ============================================================================
+# REQUIREMENT ATTRIBUTES (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+requirement_attributes:  # OPTIONAL
+  
+  priorities:  # OPTIONAL - Type: dict - Define priority levels
+    critical: "Must be satisfied - system failure if not met"
+    high: "Should be satisfied - significant impact if not met"
+    medium: "Should be satisfied - moderate impact if not met"
+    low: "Nice to have - minimal impact if not met"
+  
+  statuses:  # OPTIONAL - Type: list - Valid requirement statuses
+    - draft
+    - proposed
+    - approved
+    - implemented
+    - verified
+    - obsolete
+  
+  # EXTENSIBLE: Add custom attribute definitions
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_requirements: 0  # Type: number
+  functional: 0  # Type: number
+  performance: 0  # Type: number
+  interface: 0  # Type: number
+  safety: 0  # Type: number
+  security: 0  # Type: number
+  
+  by_priority:  # OPTIONAL
+    critical: 0
+    high: 0
+    medium: 0
+    low: 0
+  
+  requirements_with_design: 0  # Type: number
+  requirements_with_verification: 0  # Type: number
+  traceability_coverage: 0  # Type: number - Percentage
+  coverage_unit: percent  # Type: string
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+# EXTENSIBLE: Add custom sections for your project
+custom_metadata:  # OPTIONAL
+  project_specific_field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Requirements diagram template for MBSE"
+  
+  usage_instructions: |
+    1. Copy this template to your project
+    2. Rename to 01_requirements_diagram.yaml
+    3. Fill in requirement types needed (functional, performance, interface, etc.)
+    4. For each requirement:
+       - Assign unique ID (REQ-<MODULE>-<NUMBER>)
+       - Write SHALL statement
+       - Set priority
+       - Define satisfiedBy relationships (design elements)
+       - Define verifiedBy relationships (verification requirements)
+    5. Complete traceability sections
+    6. Optionally group requirements
+    7. Update statistics
+  
+  requirement_writing_guidelines:
+    - "Use SHALL for mandatory requirements"
+    - "Use SHOULD for desired but not mandatory"
+    - "Make requirements testable and verifiable"
+    - "One requirement per statement"
+    - "Avoid ambiguous terms (appropriate, sufficient, etc.)"
+    - "Include acceptance criteria where applicable"
+  
+  common_mistakes:
+    - "Missing SHALL in requirement text"
+    - "Ambiguous or untestable requirements"
+    - "Broken traceability links (referencing non-existent IDs)"
+    - "No verification method defined"
+    - "Missing priority assignment"
+  
+  traceability_rules:
+    - "Every requirement MUST have satisfiedBy (design element)"
+    - "Every requirement MUST have verifiedBy (verification requirement)"
+    - "All referenced IDs must exist in other diagrams"
+    - "Traceability must be bidirectional (check both directions)"

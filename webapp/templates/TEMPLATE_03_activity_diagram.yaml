@@ -1,0 +1,360 @@
+﻿# ============================================================================
+# TEMPLATE: 03_activity_diagram.yaml
+# Activity Diagram Template
+# ============================================================================
+# Purpose: Define behavioral flow and algorithm - actions, decisions, flows
+# Usage: Copy this template and define algorithm behavior for functions
+# Dependencies: 00_metadata.yaml, 02_block_definition_diagram.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | number | list | dict
+# - Example values shown in [brackets]
+
+# ============================================================================
+# ACTIVITIES SECTION (MANDATORY)
+# ============================================================================
+
+activities:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # MANDATORY - Type: string - Format: "ACT-<FunctionName>" - Example: "ACT-WindSet"
+    stereotype: activity  # MANDATORY - Type: string - Value: "activity"
+    name: ""  # MANDATORY - Type: string - Activity name
+    context: ""  # MANDATORY - Type: string - Block ID this activity belongs to - Example: "BLK-WindSet"
+    
+    description: ""  # MANDATORY - Type: string - What this activity does
+    
+    source_code_lines: []  # OPTIONAL - Type: list - [start_line, end_line] - Example: [18, 32]
+    source_file: ""  # OPTIONAL - Type: string - Example: "Module.c"
+    
+    # Parameters (inputs/outputs)
+    parameters:  # OPTIONAL
+      input:  # OPTIONAL - Type: list of dicts
+        - name: ""  # Type: string
+          type: ""  # Type: string
+          description: ""  # OPTIONAL
+        # EXTENSIBLE: Add input parameters
+        
+      output:  # OPTIONAL - Type: list of dicts
+        - name: ""  # Type: string
+          type: ""  # Type: string
+          description: ""  # OPTIONAL
+        # EXTENSIBLE: Add output parameters
+    
+    # Activity Nodes
+    nodes:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      # Initial Node (MANDATORY - exactly one)
+      - id: node_initial  # MANDATORY - Type: string - Unique node ID
+        type: InitialNode  # MANDATORY - Type: string - Values: [InitialNode, ActivityFinalNode, FlowFinalNode, OpaqueAction, CallBehaviorAction, DecisionNode, MergeNode, ForkNode, JoinNode, AcceptEventAction, SendSignalAction]
+        name: "Start"  # MANDATORY - Type: string
+      
+      # Action Node
+      - id: ""  # MANDATORY - Format: "node_<n>"
+        type: OpaqueAction  # MANDATORY - For simple actions
+        name: ""  # MANDATORY - Type: string - Descriptive name
+        
+        description: ""  # OPTIONAL - Type: string
+        code: ""  # OPTIONAL - Type: string - Actual code if reverse engineering
+        source_line: 0  # OPTIONAL - Type: number - Source code line number
+        note: ""  # OPTIONAL - Type: string
+      
+      # Call Behavior Action Node
+      - id: ""  # MANDATORY
+        type: CallBehaviorAction  # MANDATORY - For function calls
+        name: ""  # MANDATORY
+        
+        description: ""  # OPTIONAL
+        operation: ""  # MANDATORY - Type: string - Function being called
+        
+        inputs:  # OPTIONAL - Type: list of dicts
+          - parameter: ""  # Parameter name
+            value: ""  # Value passed
+            note: ""  # OPTIONAL
+          # EXTENSIBLE: Add inputs
+        
+        outputs:  # OPTIONAL - Type: list of dicts
+          - parameter: ""  # Parameter name
+            binding: ""  # Variable receiving result
+          # EXTENSIBLE: Add outputs
+        
+        code: ""  # OPTIONAL - Type: string
+        source_line: 0  # OPTIONAL
+      
+      # Decision Node
+      - id: ""  # MANDATORY
+        type: DecisionNode  # MANDATORY - For branching
+        name: ""  # MANDATORY - Type: string - Question format
+        
+        guard_condition: ""  # MANDATORY - Type: string - Boolean expression
+        source_line: 0  # OPTIONAL
+      
+      # Merge Node
+      - id: ""  # MANDATORY
+        type: MergeNode  # MANDATORY - Merges flows
+        name: ""  # MANDATORY
+      
+      # Fork Node
+      - id: ""  # MANDATORY
+        type: ForkNode  # MANDATORY - Parallel flows
+        name: ""  # MANDATORY
+      
+      # Join Node
+      - id: ""  # MANDATORY
+        type: JoinNode  # MANDATORY - Synchronize parallel flows
+        name: ""  # MANDATORY
+      
+      # Final Node (MANDATORY - at least one)
+      - id: node_final  # MANDATORY
+        type: ActivityFinalNode  # MANDATORY - Ends entire activity
+        name: "End"  # MANDATORY
+      
+      # Flow Final Node
+      - id: ""  # OPTIONAL
+        type: FlowFinalNode  # For ending one flow in parallel activities
+        name: ""
+      
+      # EXTENSIBLE: Add more nodes
+    
+    # Control Flows (edges between nodes)
+    edges:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      - id: ""  # MANDATORY - Type: string - Format: "edge_<n>"
+        source: ""  # MANDATORY - Type: string - Source node ID
+        target: ""  # MANDATORY - Type: string - Target node ID
+        
+        guard: ""  # OPTIONAL - Type: string - Guard condition for decision branches
+        guard_name: ""  # OPTIONAL - Type: string - Label like "valid", "invalid"
+        
+        weight: ""  # OPTIONAL - Type: string - For decision nodes
+        
+        note: ""  # OPTIONAL - Type: string
+      
+      # EXTENSIBLE: Add more edges
+    
+    # Object Flows (data between nodes)
+    object_flows:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      
+      - id: ""  # Type: string
+        source: ""  # Source node/pin
+        target: ""  # Target node/pin
+        object: ""  # Data object flowing
+      
+      # EXTENSIBLE: Add object flows
+    
+    # Variables (activity-level)
+    variables:  # OPTIONAL - Type: list of dicts
+      - name: ""  # Type: string
+        type: ""  # Type: string
+        scope: activity  # Type: string
+        initial_value: ""  # OPTIONAL
+      # EXTENSIBLE: Add variables
+    
+    # Code Mapping (for reverse engineering)
+    code_mapping:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      - source_line: 0  # Type: number
+        activity_node: ""  # Node ID
+      # EXTENSIBLE: Add mappings
+    
+    # Requirements Satisfied
+    satisfies:  # MANDATORY - Type: list
+      - ""  # Example: "REQ-MODULE-001"
+      # EXTENSIBLE: Add requirements
+    
+    # Performance
+    timing:  # OPTIONAL
+      worst_case_execution_time: 0  # Type: number
+      typical_execution_time: 0  # Type: number
+      unit: ""  # Type: string - Example: "milliseconds"
+    
+    # Constraints
+    preconditions:  # OPTIONAL - Type: list
+      - ""  # Conditions that must be true before activity
+    
+    postconditions:  # OPTIONAL - Type: list
+      - ""  # Conditions guaranteed after activity
+    
+    invariants:  # OPTIONAL - Type: list
+      - ""  # Conditions that remain true throughout
+  
+  # EXTENSIBLE: Add more activities
+
+# ============================================================================
+# ACTIVITY NODE TYPES CATALOG (REFERENCE)
+# ============================================================================
+
+node_types_reference:  # OPTIONAL - Documentation only
+  
+  InitialNode:
+    description: "Starting point of activity (exactly one required)"
+    symbol: "Filled circle"
+    
+  ActivityFinalNode:
+    description: "Ends entire activity (at least one required)"
+    symbol: "Circle with filled circle inside"
+    
+  FlowFinalNode:
+    description: "Ends one flow in parallel activities"
+    symbol: "Circle with X inside"
+    
+  OpaqueAction:
+    description: "Generic action - use for simple operations"
+    use_for: "Variable assignments, calculations, simple operations"
+    
+  CallBehaviorAction:
+    description: "Calls another behavior/function"
+    use_for: "Function calls, invoke operations"
+    
+  DecisionNode:
+    description: "Conditional branching (if/switch)"
+    symbol: "Diamond"
+    requires: "Guard conditions on outgoing edges"
+    
+  MergeNode:
+    description: "Merges multiple flows into one"
+    symbol: "Diamond"
+    
+  ForkNode:
+    description: "Splits flow into parallel concurrent flows"
+    symbol: "Thick horizontal/vertical bar"
+    
+  JoinNode:
+    description: "Synchronizes parallel flows"
+    symbol: "Thick horizontal/vertical bar"
+    
+  AcceptEventAction:
+    description: "Waits for event"
+    use_for: "Event-driven behaviors"
+    
+  SendSignalAction:
+    description: "Sends signal/event"
+    use_for: "Triggering other activities"
+
+# ============================================================================
+# EDGE TYPES REFERENCE
+# ============================================================================
+
+edge_types_reference:  # OPTIONAL - Documentation only
+  
+  control_flow:
+    description: "Shows order of execution"
+    notation: "Solid arrow"
+    
+  object_flow:
+    description: "Shows data/object movement"
+    notation: "Solid arrow with object label"
+    
+  guarded_flow:
+    description: "Conditional flow from decision"
+    notation: "Arrow with [condition] label"
+
+# ============================================================================
+# ACTIVITY PATTERNS (OPTIONAL)
+# ============================================================================
+
+activity_patterns:  # OPTIONAL - Common patterns
+  
+  sequence:
+    description: "Linear sequence of actions"
+    structure: "InitialNode → Action1 → Action2 → ... → FinalNode"
+    
+  decision:
+    description: "Conditional branching"
+    structure: "DecisionNode → [guard1] Action1 → MergeNode"
+    
+  loop:
+    description: "Iterative behavior"
+    structure: "DecisionNode → [continue] Action → back to DecisionNode"
+    
+  parallel:
+    description: "Concurrent execution"
+    structure: "ForkNode → Action1 (parallel) Action2 → JoinNode"
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_activities: 0  # Type: number
+  total_nodes: 0  # Type: number
+  total_edges: 0  # Type: number
+  
+  node_types:  # OPTIONAL
+    InitialNode: 0
+    ActivityFinalNode: 0
+    OpaqueAction: 0
+    CallBehaviorAction: 0
+    DecisionNode: 0
+    MergeNode: 0
+  
+  complexity_metrics:  # OPTIONAL
+    cyclomatic_complexity: 0  # Number of decision points + 1
+    max_nesting_depth: 0
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+# EXTENSIBLE: Add project-specific sections
+custom_activity_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Activity diagram template - defines behavioral flow and algorithms"
+  
+  usage_instructions: |
+    1. Copy this template to your project
+    2. Rename to 03_activity_diagram.yaml
+    3. For each function/algorithm:
+       - Create activity with unique ID (ACT-<FunctionName>)
+       - Link to block context (BLK-<FunctionName>)
+       - Define input/output parameters
+    4. Define activity nodes:
+       - Start with InitialNode
+       - Add action nodes (OpaqueAction for operations)
+       - Add decision nodes for branches
+       - Add merge nodes to rejoin flows
+       - End with ActivityFinalNode
+    5. Connect nodes with edges:
+       - Define control flow from source to target
+       - Add guards for decision branches
+    6. Map to source code lines (if reverse engineering)
+    7. Link to requirements satisfied
+    8. Update statistics
+  
+  node_selection_guide:
+    simple_action: "Use OpaqueAction (variable assignment, calculation)"
+    function_call: "Use CallBehaviorAction (calling other functions)"
+    conditional: "Use DecisionNode + MergeNode"
+    loop: "Use DecisionNode with edge back to earlier node"
+    parallel: "Use ForkNode + JoinNode"
+    
+  common_mistakes:
+    - "Missing InitialNode or ActivityFinalNode"
+    - "Decision nodes without guards on edges"
+    - "Unreachable nodes (no incoming edge)"
+    - "Dead ends (no outgoing edge except FinalNode)"
+    - "Merge nodes with guards (use DecisionNode instead)"
+    - "Missing source/target on edges"
+  
+  complexity_guidelines:
+    simple: "< 10 nodes, linear flow"
+    moderate: "10-30 nodes, some branching"
+    complex: "> 30 nodes, multiple branches/loops"
+    recommendation: "Consider breaking complex activities into sub-activities"
+  
+  reverse_engineering_tips:
+    - "Map each source line to activity node"
+    - "Use code field to preserve original code"
+    - "Guard conditions match source if/switch statements"
+    - "Preserve code structure and flow"
+    - "Document assumptions in notes"

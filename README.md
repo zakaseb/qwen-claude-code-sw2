@@ -1,6 +1,6 @@
 # Qwen Claude Code Local Development Environment
 
-This repository provides a Docker-based setup for running the Qwen3-Coder-30B-A3B-Instruct model with Claude Code integration.
+This repository provides a localized Docker-based setup for running the Qwen3-Coder-30B-A3B-Instruct model with Claude Code integration.
 
 ## Overview
 
@@ -10,6 +10,54 @@ This setup allows you to run a local LLM (Qwen3-Coder-30B-A3B-Instruct) using ll
 
 - **Local Execution**: Run code generation models entirely locally without internet access after initial download
 - **Claude Code API compatible** through litellm proxy
+- **C-to-SysML MBSE Pipeline**: A web-based UI for reverse-engineering C source code into SysML YAML artifacts, fully localized with zero data leakage to the internet
+
+## C-to-SysML MBSE Pipeline
+
+The pipeline reverse-engineers C source code into 11 structured SysML YAML artifacts, following the PROCESS_MANUAL workflow used in Model-Based Systems Engineering (MBSE). Each artifact is generated sequentially by the local LLM, using the corresponding template as structural guidance and previously generated artifacts as context — exactly as the process manual prescribes.
+
+### Generated Artifacts
+
+The pipeline produces the following files, organized by workflow phase:
+
+| Phase | File | Purpose |
+|-------|------|---------|
+| 1 — Situation Awareness | `00_metadata.yaml` | Module identification, ownership, dependencies, standards compliance, code characteristics |
+| 2 — Requirements Extraction | `01_requirements_diagram.yaml` | Functional, interface, performance, safety, and security requirements as SHALL statements |
+| 3 — Verification Strategy | `01b_verification_requirements.yaml` | Verification method, approach, and acceptance criteria for each requirement |
+| 4a — Block Definition | `02_block_definition_diagram.yaml` | Functions as blocks with operations, structs as value types, external dependencies |
+| 4b — Activity Diagram | `03_activity_diagram.yaml` | Algorithm flow: nodes, edges, decision/merge, mapped to source code lines |
+| 4c — State Machine | `04_state_machine_diagram.yaml` | State-based behavior (or explicit not_applicable determination with rationale) |
+| 4d — Sequence Diagram | `05_sequence_diagram.yaml` | Message interactions for success and failure scenarios |
+| 4e — Parametric Diagram | `06_parametric_diagram.yaml` | Mathematical constraints, sizeof calculations, performance budgets |
+| 4f — Allocations | `07_allocations.yaml` | Logical-to-physical mapping: functions→CPU, data→RAM/Flash, code→ROM |
+| 5 — Test Generation | `08_test_cases.yaml` | Detailed test specifications implementing the verification requirements |
+| 6 — Generation Config | `09_generation_config.yaml` | Build, documentation, and output generation configuration |
+
+### Templates and Process Manual
+
+All templates (`TEMPLATE_00` through `TEMPLATE_09`) and the `PROCESS_MANUAL.yaml` are bundled in `webapp/templates/`. They define the exact YAML structure, mandatory/optional fields, and inter-artifact dependencies. The LLM prompt for each artifact includes:
+
+1. The corresponding template (structural guide)
+2. The input C source code
+3. Context from previously generated artifacts (as required by the dependency chain in the process manual)
+
+### How It Works
+
+The backend (`webapp/app.py`) runs a FastAPI server that:
+
+1. Accepts C code via paste or file upload
+2. Iterates through the 11-artifact pipeline in order
+3. For each artifact, constructs a prompt from the template + C code + prior artifacts
+4. Streams the LLM response back to the frontend as NDJSON events (`file_start`, `chunk`, `file_done`, `pipeline_done`)
+5. Saves all generated files into a per-run output directory
+
+The frontend (`webapp/static/`) provides:
+
+- A pipeline progress tracker showing each file's generation status in real time
+- Click-to-preview tabs for inspecting any generated artifact
+- A **Download All (ZIP)** button to retrieve all 11 YAML files at once
+- Individual file download via the API
 
 ## What does not work
 - Think, Ultrathing etc. reasoning_effort is currently dropped as non-thinking model is currently used. To use a Qwen thinking/non-thinking model a litellm hook needs to be written to add ` /think`  ` /nothink` tags to requests. Or wait until litellm support Qwen API.
@@ -45,6 +93,20 @@ For offline mode (no internet required):
 ./run_offline.sh
 ```
 
+### Run with Web UI (C-to-SysML Pipeline)
+
+```bash
+./run_web.sh
+```
+
+Then open `http://localhost:8080` in your browser.
+
+1. Paste (or upload) your C source code
+2. Click **Generate SysML Artifacts**
+3. Watch the pipeline generate 11 YAML files in sequence, each following a specific MBSE template
+4. Click any file in the pipeline to preview its contents
+5. Click **Download All (ZIP)** to download all generated artifacts
+
 ## Testing
 
 After running, you can test the setup with:
@@ -75,3 +137,4 @@ If you encounter issues:
 3. Verify network connectivity during initial model download
 4. Make sure you're running with appropriate permissions
 5. If you get connection error 500, verify if llama-server is still running by using `./view_llama_server.sh` script. Sometimes it crashes upon tool calling.
+6. For C-to-SysML web UI: if generation hangs or times out, run `./view_llama_server.sh` from another terminal to inspect the llama-server and litellm panes. Ensure the model has finished loading (look for "slot" or "loaded" in llama-server output) before generating.

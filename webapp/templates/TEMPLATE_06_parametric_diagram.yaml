@@ -1,0 +1,247 @@
+# ============================================================================
+# TEMPLATE: 06_parametric_diagram.yaml
+# Parametric Diagram Template
+# ============================================================================
+# Purpose: Define mathematical constraints, equations, performance budgets
+# Usage: Copy this template and define constraints for your module
+# Dependencies: 00_metadata.yaml, 02_block_definition_diagram.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | number | list | dict
+
+# ============================================================================
+# CONSTRAINT BLOCKS SECTION (MANDATORY)
+# ============================================================================
+
+constraint_blocks:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # MANDATORY - Type: string - Format: "CB-<n>" - Example: "CB-CRC-Coverage"
+    stereotype: constraint_block  # MANDATORY - Type: string - Value: "constraint_block"
+    name: ""  # MANDATORY - Type: string - Constraint block name
+    
+    description: ""  # MANDATORY - Type: string - What this constraint defines
+    
+    note: ""  # OPTIONAL - Type: string - Example: "Design analysis only - not a requirement"
+    
+    # Parameters
+    parameters:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      - name: ""  # MANDATORY - Type: string - Parameter name
+        type: ""  # MANDATORY - Type: string - Data type - Example: "unsigned short", "float"
+        unit: ""  # OPTIONAL - Type: string - Example: "bytes", "milliseconds", "meters"
+        value: ""  # OPTIONAL - Type: string/number - Actual value if constant
+        direction: ""  # OPTIONAL - Type: string - Values: [in, out, inout]
+        
+        source: ""  # OPTIONAL - Type: string - Where value comes from - Example: "sizeof(sWind)"
+        description: ""  # OPTIONAL - Type: string
+        range: []  # OPTIONAL - Type: list - [min, max]
+        
+      # EXTENSIBLE: Add parameters
+    
+    # Constraints (equations)
+    constraints:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      - equation: ""  # MANDATORY - Type: string - Mathematical equation - Example: "output = input1 + input2"
+        result: ""  # OPTIONAL - Type: string - Calculated result - Example: "52 - 6 = 46"
+        calculation: ""  # OPTIONAL - Type: string - Detailed calculation steps
+        note: ""  # OPTIONAL - Type: string
+        
+        requirement: ""  # OPTIONAL - Type: string - Requirement this must satisfy
+        rationale: ""  # OPTIONAL - Type: string
+      
+      # EXTENSIBLE: Add constraints
+    
+    # Verification
+    verification:  # OPTIONAL - Type: list of dicts
+      - requirement: ""  # Requirement ID
+        verified_by: ""  # How this is verified
+      # EXTENSIBLE: Add verifications
+    
+    # Code Reference (for reverse engineering)
+    code_reference:  # OPTIONAL
+      file: ""  # Source file
+      line: 0  # Line number
+      expression: ""  # Code expression
+    
+    # Criticality
+    critical: false  # OPTIONAL - Type: boolean - Is this constraint critical?
+    bottleneck: false  # OPTIONAL - Type: boolean - Is this a performance bottleneck?
+  
+  # EXTENSIBLE: Add more constraint blocks
+
+# ============================================================================
+# CONSTRAINT PROPERTIES (OPTIONAL)
+# ============================================================================
+
+constraint_properties:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - property: ""  # Type: string - Property name
+    block: ""  # Type: string - Block ID this applies to
+    constraint: ""  # Type: string - Constraint expression
+    value: ""  # Type: string/number - Value
+    unit: ""  # OPTIONAL - Type: string
+    description: ""  # OPTIONAL - Type: string
+    critical: false  # OPTIONAL - Type: boolean
+    rationale: ""  # OPTIONAL - Type: string
+  
+  # EXTENSIBLE: Add properties
+
+# ============================================================================
+# PARAMETRIC RELATIONSHIPS (OPTIONAL)
+# ============================================================================
+
+parametric_relationships:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - relationship: ""  # Type: string - Relationship name
+    from: ""  # Type: string - Source parameter - Example: "CB-Block1.param1"
+    to: ""  # Type: string - Target parameter - Example: "CB-Block2.param2"
+    binding: ""  # Type: string - How they're related - Example: "=", ">", "<"
+    description: ""  # OPTIONAL
+  
+  # EXTENSIBLE: Add relationships
+
+# ============================================================================
+# DERIVED EQUATIONS (OPTIONAL)
+# ============================================================================
+
+derived_equations:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - name: ""  # Type: string - Equation name
+    equation: ""  # Type: string - Mathematical formula
+    variables:  # Type: dict - Variable values
+      # variable_name: value
+    result: ""  # Type: string/number - Calculated result
+    units: ""  # Type: string
+    note: ""  # OPTIONAL
+  
+  # EXTENSIBLE: Add equations
+
+# ============================================================================
+# PERFORMANCE BUDGETS (OPTIONAL)
+# ============================================================================
+
+performance_budgets:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - budget_type: ""  # Type: string - Values: [timing, memory, throughput, latency, power]
+    name: ""  # Type: string - Budget name
+    
+    allocated: 0  # Type: number - Allocated amount
+    actual: 0  # Type: number - Actual usage
+    unit: ""  # Type: string
+    
+    margin: 0  # Type: number - Percentage margin
+    margin_unit: percent  # Type: string
+    
+    status: ""  # Type: string - Values: [within_budget, at_risk, exceeded]
+    
+    components:  # OPTIONAL - Type: list of dicts - Breakdown
+      - component: ""
+        allocation: 0
+        unit: ""
+    
+    critical_path: []  # OPTIONAL - Type: list - Critical elements
+    bottlenecks: []  # OPTIONAL - Type: list
+    optimization_notes: ""  # OPTIONAL
+  
+  # EXTENSIBLE: Add budgets
+
+# ============================================================================
+# VERIFICATION MATRIX (OPTIONAL)
+# ============================================================================
+
+verification_matrix:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+  
+  - constraint: ""  # Type: string - Constraint block ID
+    requirements: []  # Type: list - Requirement IDs verified
+    verification_method: ""  # Type: string - Values: [calculation, analysis, test, inspection]
+    verified: false  # Type: boolean
+    result: ""  # Type: string - Verification result
+  
+  # EXTENSIBLE: Add verifications
+
+# ============================================================================
+# TRACEABILITY (OPTIONAL)
+# ============================================================================
+
+traceability:  # OPTIONAL
+  
+  constraints_to_requirements:  # OPTIONAL - Type: list of dicts
+    - constraint: ""  # Constraint block ID
+      requirements: []  # Requirement IDs
+    # EXTENSIBLE
+  
+  constraints_to_blocks:  # OPTIONAL - Type: list of dicts
+    - constraint: ""  # Constraint block ID
+      blocks: []  # Block IDs
+    # EXTENSIBLE
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  constraint_blocks: 0  # Type: number
+  parameters: 0  # Type: number
+  equations: 0  # Type: number
+  requirements_verified: 0  # Type: number
+  critical_constraints: 0  # Type: number
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+custom_parametric_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Parametric diagram template - defines mathematical constraints and equations"
+  
+  usage_instructions: |
+    1. Copy this template to your project
+    2. Rename to 06_parametric_diagram.yaml
+    3. Identify constraints:
+       - Size calculations (structure sizes, array dimensions)
+       - Performance budgets (timing, memory, throughput)
+       - Mathematical relationships (equations, formulas)
+       - Physical constraints (ranges, limits)
+    4. For each constraint:
+       - Create constraint block with unique ID
+       - Define input/output parameters
+       - Write equations clearly
+       - Calculate results
+       - Link to requirements if applicable
+    5. Define performance budgets if applicable
+    6. Update traceability and statistics
+  
+  constraint_types:
+    structural: "Size, alignment, packing constraints"
+    performance: "Timing, memory, throughput budgets"
+    mathematical: "Calculations, formulas, algorithms"
+    physical: "Ranges, limits, tolerances"
+    design_verification: "Analysis without explicit requirements"
+  
+  when_to_use:
+    required:
+      - "Size calculations needed"
+      - "Performance budgets defined"
+      - "Mathematical relationships exist"
+    optional:
+      - "Verification of numeric requirements"
+      - "Design analysis and optimization"
+  
+  common_mistakes:
+    - "Missing units on parameters"
+    - "Equations without results/verification"
+    - "Claiming requirement satisfaction without explicit requirement"
+    - "Too complex equations (break into steps)"
+    - "Missing verification method"

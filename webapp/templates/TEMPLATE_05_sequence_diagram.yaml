@@ -1,0 +1,327 @@
+# ============================================================================
+# TEMPLATE: 05_sequence_diagram.yaml
+# Sequence Diagram Template
+# ============================================================================
+# Purpose: Define message interactions over time - lifelines, messages, scenarios
+# Usage: Copy this template and define interaction sequences
+# Dependencies: 00_metadata.yaml, 02_block_definition_diagram.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | number | list | dict
+
+# ============================================================================
+# SEQUENCE DIAGRAMS SECTION (MANDATORY)
+# ============================================================================
+
+sequence_diagrams:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+  
+  - id: ""  # MANDATORY - Type: string - Format: "SEQ-<n>" - Example: "SEQ-WindSet-Valid"
+    stereotype: sequence_diagram  # MANDATORY - Type: string - Value: "sequence_diagram"
+    name: ""  # MANDATORY - Type: string - Descriptive scenario name
+    
+    description: ""  # MANDATORY - Type: string - What this sequence shows
+    
+    scenario: ""  # MANDATORY - Type: string - Values: [success_path, failure_path, alternative_path, exception_path, nominal, error]
+    precondition: ""  # OPTIONAL - Type: string - State before sequence
+    postcondition: ""  # OPTIONAL - Type: string - State after sequence
+    
+    # Lifelines (participants)
+    lifelines:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      - id: ""  # MANDATORY - Type: string - Unique lifeline ID - Example: "caller"
+        name: ""  # MANDATORY - Type: string - Notation: ":<Type>" or "object:Type" - Example: ":Caller"
+        type: ""  # MANDATORY - Type: string - Values: [external, function, data_structure, module, system]
+        block: ""  # OPTIONAL - Type: string - Block ID from BDD - Example: "BLK-WindSet"
+        description: ""  # OPTIONAL - Type: string
+      
+      # EXTENSIBLE: Add lifelines for all participants
+    
+    # Messages (interactions)
+    messages:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      # Synchronous Call
+      - id: ""  # MANDATORY - Type: string - Format: "msg_<n>"
+        sequence: 0  # MANDATORY - Type: number - Message order (1, 2, 3...)
+        from: ""  # MANDATORY - Type: string - Source lifeline ID
+        to: ""  # MANDATORY - Type: string - Target lifeline ID
+        message_type: synchronous_call  # MANDATORY - Type: string - Values: [synchronous_call, asynchronous_call, synchronous_return, asynchronous_return, synchronous_write, synchronous_read, create, destroy, self_call]
+        name: ""  # MANDATORY - Type: string - Message name - Example: "calculateCRC(data)"
+        
+        parameters:  # OPTIONAL - Type: list of dicts
+          - name: ""  # Parameter name
+            type: ""  # OPTIONAL - Data type
+            value: ""  # Value or expression
+            note: ""  # OPTIONAL
+          # EXTENSIBLE: Add parameters
+        
+        return:  # OPTIONAL - Type: dict - For function calls
+          type: ""  # Return type
+          binding: ""  # OPTIONAL - Variable receiving return
+        
+        source_line: 0  # OPTIONAL - Type: number - Source code line
+        timing: ""  # OPTIONAL - Type: string - Estimated time - Example: "~1 microsecond"
+        
+        note: ""  # OPTIONAL - Type: string
+      
+      # Asynchronous Call
+      - id: ""
+        sequence: 0
+        from: ""
+        to: ""
+        message_type: asynchronous_call
+        name: ""
+        
+        callback: ""  # OPTIONAL - Type: string - Callback message ID
+      
+      # Return Message
+      - id: ""
+        sequence: 0
+        from: ""
+        to: ""
+        message_type: synchronous_return  # or asynchronous_return
+        name: ""  # Example: "return TRUE"
+        
+        return_value: ""  # Return value
+        type: ""  # Return type
+      
+      # Data Write
+      - id: ""
+        sequence: 0
+        from: ""
+        to: ""
+        message_type: synchronous_write
+        name: ""  # Example: "flag = TRUE"
+        
+        target: ""  # What is being written
+        value: ""  # Value written
+        operation: ""  # OPTIONAL - Example: "assignment", "structure_copy"
+        bytes_copied: 0  # OPTIONAL - For structure operations
+      
+      # Self Call
+      - id: ""
+        sequence: 0
+        from: ""  # Same as to
+        to: ""  # Same as from
+        message_type: self_call
+        name: ""  # Internal operation
+        
+        operation: ""  # What is being done
+        result: ""  # OPTIONAL - Result value
+      
+      # EXTENSIBLE: Add more messages
+    
+    # Combined Fragments (optional advanced features)
+    combined_fragments:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      
+      - id: ""  # Type: string
+        type: ""  # Type: string - Values: [alt, opt, loop, par, break, critical, neg, assert, ignore, consider]
+        operator: ""  # Type: string - Same as type
+        
+        operands:  # Type: list of dicts
+          - guard: ""  # Condition
+            messages: []  # Message IDs in this operand
+        
+        description: ""  # OPTIONAL
+      
+      # EXTENSIBLE: Add fragments
+    
+    # Timing Constraints
+    timing:  # OPTIONAL
+      total_execution: ""  # Type: string - Example: "< 10 milliseconds"
+      critical_path: []  # Type: list - Message IDs on critical path
+    
+    # Requirements Satisfied
+    satisfies:  # MANDATORY - Type: list
+      - ""  # Requirement IDs
+      # EXTENSIBLE: Add requirements
+  
+  # EXTENSIBLE: Add more sequence diagrams (different scenarios)
+
+# ============================================================================
+# MESSAGE TYPES CATALOG (REFERENCE)
+# ============================================================================
+
+message_types_reference:  # OPTIONAL - Documentation only
+  
+  synchronous_call:
+    description: "Caller blocks until callee returns"
+    notation: "Solid arrow with filled head"
+    blocking: true
+    
+  asynchronous_call:
+    description: "Caller continues without waiting"
+    notation: "Solid arrow with line head"
+    blocking: false
+    
+  synchronous_return:
+    description: "Return from synchronous call"
+    notation: "Dashed arrow"
+    
+  synchronous_write:
+    description: "Direct memory/data write"
+    notation: "Solid arrow to data lifeline"
+    
+  synchronous_read:
+    description: "Direct memory/data read"
+    notation: "Solid arrow from data lifeline"
+    
+  create:
+    description: "Object creation"
+    notation: "Dashed arrow with <<create>> stereotype"
+    
+  destroy:
+    description: "Object destruction"
+    notation: "Arrow to X at end of lifeline"
+    
+  self_call:
+    description: "Internal operation within object"
+    notation: "Arrow from lifeline to itself"
+
+# ============================================================================
+# INTERACTION PATTERNS (OPTIONAL)
+# ============================================================================
+
+interaction_patterns:  # OPTIONAL - Type: list of dicts
+  
+  - pattern: ""  # Type: string - Pattern name - Example: "synchronous_validation"
+    description: ""  # Type: string
+    participants: []  # Type: list - Lifeline IDs
+    note: ""  # OPTIONAL
+  
+  # EXTENSIBLE: Add patterns
+
+# ============================================================================
+# SCENARIO COMPARISON (OPTIONAL)
+# ============================================================================
+
+scenario_comparison:  # OPTIONAL - Compare multiple scenarios
+  
+  common_messages:  # OPTIONAL - Type: list - Messages in all scenarios
+    - ""
+  
+  scenario_specific:  # OPTIONAL - Type: dict
+    success_path:  # Scenario name
+      unique_messages: []  # Messages only in this scenario
+    
+    failure_path:
+      unique_messages: []
+  
+  key_differences:  # OPTIONAL - Type: list
+    - difference: ""
+      scenarios: []  # Which scenarios differ
+
+# ============================================================================
+# TIMING ANALYSIS (OPTIONAL)
+# ============================================================================
+
+timing_analysis:  # OPTIONAL
+  
+  execution_time_estimate:  # OPTIONAL
+    typical: ""  # Example: "< 5 milliseconds"
+    worst_case: ""  # Example: "< 10 milliseconds"
+  
+  message_timings:  # OPTIONAL - Type: list of dicts
+    - message: ""  # Message ID or name
+      estimate: ""  # Time estimate
+      note: ""  # OPTIONAL
+      critical: false  # Type: boolean
+  
+  bottlenecks: []  # OPTIONAL - Type: list - Message IDs that are slow
+  
+  optimization_notes: ""  # OPTIONAL - Type: string
+
+# ============================================================================
+# DEPENDENCIES (OPTIONAL)
+# ============================================================================
+
+external_dependencies:  # OPTIONAL - Type: list of dicts
+  
+  - module: ""  # Type: string - Module name
+    function: ""  # Type: string - Function name
+    criticality: ""  # Type: string - Values: [high, medium, low]
+    failure_mode: ""  # Type: string - What happens if fails
+  
+  # EXTENSIBLE: Add dependencies
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  total_scenarios: 0  # Type: number
+  lifelines_per_scenario: 0  # Type: number - Typical or max
+  total_messages: 0  # Type: number
+  
+  message_types:  # OPTIONAL
+    synchronous_call: 0
+    asynchronous_call: 0
+    synchronous_return: 0
+    synchronous_write: 0
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+custom_sequence_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "Sequence diagram template - defines message interactions over time"
+  
+  usage_instructions: |
+    1. Copy this template to your project
+    2. Rename to 05_sequence_diagram.yaml
+    3. Identify key interaction scenarios:
+       - Success/nominal path (happy path)
+       - Failure/error paths
+       - Alternative flows
+    4. For each scenario:
+       - Create sequence diagram with unique ID
+       - Define lifelines (all participants)
+       - Define messages in chronological order
+       - Use sequence numbers (1, 2, 3...)
+    5. Specify message types correctly:
+       - synchronous_call for blocking calls
+       - asynchronous_call for non-blocking
+       - synchronous_return for returns
+       - synchronous_write for data modification
+    6. Link to requirements satisfied
+    7. Update statistics
+  
+  scenario_selection:
+    required: "At least one success path"
+    recommended: "Success + primary failure paths"
+    comprehensive: "Success + all error/alternative paths"
+  
+  lifeline_guidelines:
+    - "Include caller/initiator"
+    - "Include all functions called"
+    - "Include data structures modified"
+    - "Include external systems/modules"
+    - "Use :Type notation for unnamed instances"
+    - "Use name:Type for specific objects"
+  
+  message_guidelines:
+    - "Number messages sequentially"
+    - "Use descriptive names (function signature style)"
+    - "Show parameters if relevant"
+    - "Show return values"
+    - "Include timing if performance-critical"
+  
+  common_mistakes:
+    - "Missing return messages"
+    - "Incorrect message types (sync vs async)"
+    - "Non-sequential message numbers"
+    - "Missing lifelines (incomplete participants)"
+    - "Too much detail (show key interactions only)"
+    - "Missing scenario variants (only showing happy path)"

@@ -1,0 +1,316 @@
+# ============================================================================
+# TEMPLATE: 04_state_machine_diagram.yaml
+# State Machine Diagram Template
+# ============================================================================
+# Purpose: Define state-based behavior - states, transitions, guards, events
+# Usage: Copy this template and define state machines for stateful modules
+# Dependencies: 00_metadata.yaml, 02_block_definition_diagram.yaml
+# ============================================================================
+
+# SYNTAX GUIDE:
+# - MANDATORY fields marked with: # MANDATORY
+# - OPTIONAL fields marked with: # OPTIONAL
+# - EXTENSIBLE sections marked with: # EXTENSIBLE
+# - Value types shown in comments: # Type: string | number | list | dict
+# - Example values shown in [brackets]
+# - If NO state machine exists, see "not_applicable" section at bottom
+
+# ============================================================================
+# METADATA (MANDATORY)
+# ============================================================================
+
+metadata:  # MANDATORY
+  status: ""  # MANDATORY - Type: string - Values: [applicable, not_applicable]
+  note: ""  # OPTIONAL - Type: string - Explanation if not_applicable
+  
+  rationale: ""  # OPTIONAL - Type: string - Why state machine exists or doesn't exist
+  
+  behavioral_model: ""  # OPTIONAL - Type: string - Alternative if not applicable - Example: "activity_diagram"
+
+# ============================================================================
+# STATE MACHINES SECTION
+# ============================================================================
+
+state_machines:  # MANDATORY - Type: list of dicts - EXTENSIBLE (empty list if not applicable)
+  
+  - id: ""  # MANDATORY - Type: string - Format: "SM-<Name>" - Example: "SM-PowerState"
+    stereotype: state_machine  # MANDATORY - Type: string - Value: "state_machine"
+    name: ""  # MANDATORY - Type: string - State machine name
+    context: ""  # MANDATORY - Type: string - Block ID - Example: "BLK-Controller"
+    
+    description: ""  # MANDATORY - Type: string - What behavior this models
+    
+    applicability: applicable  # MANDATORY - Type: string - Values: [applicable, not_applicable]
+    
+    # Regions (for orthogonal states)
+    regions:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      - id: ""  # Type: string - Format: "RGN-<n>"
+        name: ""  # Type: string - Region name
+        description: ""  # OPTIONAL
+      # EXTENSIBLE: Add regions for concurrent behavior
+    
+    # States
+    states:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      # Simple State
+      - id: ""  # MANDATORY - Type: string - Format: "ST-<Name>" - Example: "ST-Idle"
+        stereotype: state  # MANDATORY - Type: string - Value: "state"
+        name: ""  # MANDATORY - Type: string - State name
+        type: simple  # MANDATORY - Type: string - Values: [simple, composite, submachine, initial, final, choice, junction]
+        
+        region: ""  # OPTIONAL - Type: string - Region ID if in orthogonal regions
+        
+        description: ""  # OPTIONAL - Type: string
+        
+        # State Activities
+        entry:  # OPTIONAL - Type: list - Actions on entering state
+          - ""  # Action description or code
+          # EXTENSIBLE: Add entry actions
+        
+        do:  # OPTIONAL - Type: list - Actions while in state
+          - ""  # Ongoing activity
+          # EXTENSIBLE: Add do activities
+        
+        exit:  # OPTIONAL - Type: list - Actions on leaving state
+          - ""  # Action description or code
+          # EXTENSIBLE: Add exit actions
+        
+        # State Invariants
+        invariant: ""  # OPTIONAL - Type: string - Condition always true in this state
+        
+        # Internal Transitions (don't leave state)
+        internal_transitions:  # OPTIONAL - Type: list of dicts
+          - trigger: ""  # Event that triggers
+            guard: ""  # OPTIONAL - Condition
+            effect: ""  # Action performed
+          # EXTENSIBLE: Add internal transitions
+        
+        # Substates (for composite states)
+        substates:  # OPTIONAL - Type: list - State IDs
+          - ""  # Substate ID
+          # EXTENSIBLE: Add substates
+      
+      # Initial Pseudostate (MANDATORY - one per region)
+      - id: ""  # Format: "ST-Initial"
+        stereotype: state
+        name: "Initial"
+        type: initial  # MANDATORY for start point
+      
+      # Final State (OPTIONAL - may have multiple)
+      - id: ""  # Format: "ST-Final"
+        stereotype: state
+        name: "Final"
+        type: final
+      
+      # Choice Pseudostate (for dynamic branching)
+      - id: ""  # Format: "ST-Choice-<n>"
+        stereotype: state
+        name: ""
+        type: choice
+        description: "Dynamic conditional branch"
+      
+      # Junction Pseudostate (for static branching)
+      - id: ""  # Format: "ST-Junction-<n>"
+        stereotype: state
+        name: ""
+        type: junction
+        description: "Static conditional merge/split"
+      
+      # EXTENSIBLE: Add more states
+    
+    # Transitions
+    transitions:  # MANDATORY - Type: list of dicts - EXTENSIBLE
+      
+      - id: ""  # MANDATORY - Type: string - Format: "TR-<n>"
+        source: ""  # MANDATORY - Type: string - Source state ID
+        target: ""  # MANDATORY - Type: string - Target state ID
+        
+        trigger: ""  # OPTIONAL - Type: string - Event that triggers transition
+        guard: ""  # OPTIONAL - Type: string - Condition that must be true - Format: "[condition]"
+        effect: ""  # OPTIONAL - Type: string - Action performed during transition
+        
+        priority: 0  # OPTIONAL - Type: number - For resolving conflicts
+        
+        kind: external  # OPTIONAL - Type: string - Values: [external, internal, local]
+        
+        note: ""  # OPTIONAL - Type: string
+      
+      # EXTENSIBLE: Add more transitions
+    
+    # Initial State
+    initial_state: ""  # MANDATORY - Type: string - State ID - Which state starts
+    
+    # Final States
+    final_states:  # OPTIONAL - Type: list
+      - ""  # State IDs
+      # EXTENSIBLE: Add final states
+    
+    # Events (catalog)
+    events:  # OPTIONAL - Type: list of dicts - EXTENSIBLE
+      - name: ""  # Type: string - Event name
+        type: ""  # Type: string - Values: [signal, call, time, change]
+        description: ""  # OPTIONAL
+        parameters:  # OPTIONAL - Type: list
+          - ""
+      # EXTENSIBLE: Add events
+    
+    # Variables
+    variables:  # OPTIONAL - Type: list of dicts
+      - name: ""  # Type: string
+        type: ""  # Type: string
+        scope: state_machine  # Type: string
+        initial_value: ""  # OPTIONAL
+      # EXTENSIBLE: Add variables
+    
+    # Requirements Satisfied
+    satisfies:  # MANDATORY - Type: list
+      - ""  # Requirement IDs
+      # EXTENSIBLE: Add requirements
+    
+    # Behavioral Properties
+    properties:  # OPTIONAL
+      deterministic: true  # Type: boolean
+      real_time: false  # Type: boolean
+      safety_critical: false  # Type: boolean
+  
+  # EXTENSIBLE: Add more state machines
+
+# ============================================================================
+# STATE MACHINE PATTERNS (OPTIONAL)
+# ============================================================================
+
+state_machine_patterns:  # OPTIONAL - Common patterns
+  
+  lifecycle:
+    description: "Typical lifecycle states"
+    states: ["Uninitialized", "Initializing", "Ready", "Active", "Error", "Shutdown"]
+    
+  operational_modes:
+    description: "System operational modes"
+    states: ["Off", "Standby", "Operational", "Maintenance", "Fault"]
+    
+  communication:
+    description: "Communication protocol states"
+    states: ["Disconnected", "Connecting", "Connected", "Transmitting", "Receiving", "Error"]
+
+# ============================================================================
+# NOT APPLICABLE SECTION (Use if no state machine exists)
+# ============================================================================
+
+not_applicable_template:  # OPTIONAL - Use this if module is stateless
+  metadata:
+    status: not_applicable
+    note: "NO STATE MACHINE EXISTS IN THIS MODULE"
+    rationale: |
+      Brief explanation of why no state machine.
+      Example: "Module is stateless validation function."
+    behavioral_model: "activity_diagram"
+  
+  state_machines: []  # Empty list
+  
+  justification:
+    characteristics_absent:
+      - "State-dependent behavior"
+      - "State memory between calls"
+      - "Operational modes"
+    
+    alternative_models:
+      - model: "Activity Diagram"
+        file: "03_activity_diagram.yaml"
+        reason: "Captures algorithmic flow"
+
+# ============================================================================
+# STATISTICS (OPTIONAL)
+# ============================================================================
+
+statistics:  # OPTIONAL
+  state_machines: 0  # Type: number
+  total_states: 0  # Type: number
+  total_transitions: 0  # Type: number
+  regions: 0  # Type: number
+  
+  state_types:  # OPTIONAL
+    simple: 0
+    composite: 0
+    initial: 0
+    final: 0
+  
+  complexity_metrics:  # OPTIONAL
+    max_outgoing_transitions: 0  # From single state
+    max_nesting_depth: 0  # For hierarchical states
+  
+  applicability: ""  # Type: string - Values: [applicable, not_applicable]
+
+# ============================================================================
+# CUSTOM EXTENSIONS (OPTIONAL - EXTENSIBLE)
+# ============================================================================
+
+custom_state_data:  # OPTIONAL
+  field: ""
+
+# ============================================================================
+# TEMPLATE METADATA
+# ============================================================================
+
+template_info:
+  template_version: "1.0"
+  template_date: "2025-10-02"
+  description: "State machine diagram template - defines state-based behavior"
+  
+  usage_instructions: |
+    1. Determine if module has state machine:
+       - Does behavior depend on previous calls/history?
+       - Are there operational modes?
+       - Does it maintain state between invocations?
+    
+    2. If YES (has state machine):
+       - Set metadata.status = "applicable"
+       - Define states with entry/do/exit actions
+       - Define transitions with triggers/guards/effects
+       - Identify initial and final states
+       
+    3. If NO (stateless):
+       - Set metadata.status = "not_applicable"
+       - Set state_machines = []
+       - Provide rationale
+       - Reference alternative behavioral model (activity diagram)
+    
+    4. For each state:
+       - Unique ID (ST-<Name>)
+       - Define entry/exit actions if any
+       - Define invariants
+       
+    5. For each transition:
+       - Source and target states
+       - Trigger event (if event-driven)
+       - Guard condition (if conditional)
+       - Effect action (if any)
+  
+  state_machine_indicators:
+    has_state_machine:
+      - "Different behavior based on current mode/state"
+      - "Memory of previous operations"
+      - "Operational modes (INIT, RUN, FAULT, etc.)"
+      - "Entry/exit actions on mode changes"
+      - "Complex transition logic between modes"
+    
+    no_state_machine:
+      - "Stateless function (same behavior every call)"
+      - "No operational modes"
+      - "No context retention"
+      - "Pure algorithmic flow"
+  
+  common_mistakes:
+    - "Creating state machine for stateless module"
+    - "Missing initial state"
+    - "Unreachable states (no incoming transitions)"
+    - "Missing guards on conflicting transitions"
+    - "Transitions without clear triggers"
+    - "Too many states (consider hierarchical)"
+  
+  design_guidelines:
+    - "Keep states mutually exclusive"
+    - "Use composite states for complexity"
+    - "Define clear entry/exit semantics"
+    - "Document all events and guards"
+    - "Consider using orthogonal regions for independent concerns"
