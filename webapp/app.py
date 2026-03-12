@@ -419,9 +419,20 @@ async def upload_and_generate_stream(file: UploadFile = File(...)):
     )
 
 
+def _safe_artifact_path(run_id: str, filename: str | None = None) -> Path:
+    """Resolve and validate that the path stays within ARTIFACTS_DIR."""
+    if filename:
+        target = (ARTIFACTS_DIR / run_id / filename).resolve()
+    else:
+        target = (ARTIFACTS_DIR / run_id).resolve()
+    if not target.is_relative_to(ARTIFACTS_DIR.resolve()):
+        raise HTTPException(status_code=400, detail="Invalid path")
+    return target
+
+
 @app.get("/api/download/{run_id}/{filename}")
 async def download_file(run_id: str, filename: str):
-    filepath = ARTIFACTS_DIR / run_id / filename
+    filepath = _safe_artifact_path(run_id, filename)
     if not filepath.exists():
         raise HTTPException(status_code=404, detail="File not found")
     return FileResponse(path=filepath, filename=filename, media_type="application/x-yaml")
@@ -429,7 +440,7 @@ async def download_file(run_id: str, filename: str):
 
 @app.get("/api/download-all/{run_id}")
 async def download_all(run_id: str):
-    out_dir = ARTIFACTS_DIR / run_id
+    out_dir = _safe_artifact_path(run_id)
     if not out_dir.exists():
         raise HTTPException(status_code=404, detail="Run not found")
     buf = io.BytesIO()
