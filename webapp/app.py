@@ -35,7 +35,7 @@ HF_MODEL = os.environ.get("HF_MODEL", "Qwen3-Coder-30B-A3B-Instruct-UD-Q4_K_XL.g
 MODEL_NAME = HF_MODEL.replace(".gguf", "") if HF_MODEL.endswith(".gguf") else HF_MODEL
 MODEL_NAME_LITELLM = f"openai/{HF_MODEL}"
 
-HTTPX_STREAM_TIMEOUT = httpx.Timeout(timeout=None, connect=30.0)
+HTTPX_STREAM_TIMEOUT = httpx.Timeout(timeout=None, connect=300.0)
 
 ARTIFACTS_DIR = Path(os.environ.get("ARTIFACTS_DIR", "/home/developer/workspace/sysml_artifacts"))
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -49,7 +49,11 @@ CODEGEN_DIR.mkdir(parents=True, exist_ok=True)
 # ===================================================================
 
 def _call_llm_stream(system_prompt: str, user_prompt: str, max_tokens: int = 4096):
-    """Yields text chunks via SSE streaming from LLM."""
+    """Yields text chunks via SSE streaming from LLM.
+
+    Tries LiteLLM proxy first, then falls back to direct llama-server.
+    Falls back if a backend returns HTTP 200 but zero content tokens.
+    """
     for base_url, model in [(LLM_BASE_URL_LITELLM, MODEL_NAME_LITELLM),
                             (LLM_BASE_URL, MODEL_NAME)]:
         url = f"{base_url.rstrip('/')}/v1/chat/completions"
@@ -66,6 +70,7 @@ def _call_llm_stream(system_prompt: str, user_prompt: str, max_tokens: int = 409
         headers = {"Authorization": f"Bearer {LLM_API_KEY}",
                     "Content-Type": "application/json"}
         try:
+            yielded = False
             with httpx.Client(timeout=HTTPX_STREAM_TIMEOUT) as client:
                 with client.stream("POST", url, json=payload, headers=headers) as resp:
                     resp.raise_for_status()
@@ -78,14 +83,17 @@ def _call_llm_stream(system_prompt: str, user_prompt: str, max_tokens: int = 409
                                 delta = data.get("choices", [{}])[0].get("delta", {})
                                 part = delta.get("content", "")
                                 if part:
+                                    yielded = True
                                     yield part
                             except (json.JSONDecodeError, KeyError):
                                 pass
-            return
+            if yielded:
+                return
         except Exception:
             if base_url == LLM_BASE_URL:
                 raise
             continue
+    raise RuntimeError("All LLM backends returned empty responses")
 
 
 def _extract_fenced(text: str, lang_hint: str = "") -> str:
@@ -381,6 +389,12 @@ def _generate_yaml_pipeline_stream(c_code: str, run_id: str):
             continue
 
         raw = "".join(parts).strip()
+        if not raw:
+            yield json.dumps({"event": "file_error", "index": idx,
+                              "error": "LLM returned empty response"}) + "\n"
+            prior[artifact["filename"]] = ""
+            continue
+
         yaml_content = _extract_fenced(raw)
         filepath = out_dir / artifact["filename"]
         filepath.write_text(yaml_content, encoding="utf-8")
@@ -583,6 +597,11 @@ def _generate_c_pipeline_stream(artifacts: dict[str, str], c_run_id: str):
             continue
 
         raw = "".join(parts).strip()
+        if not raw:
+            yield json.dumps({"event": "c_file_error", "index": idx,
+                              "error": "LLM returned empty response"}) + "\n"
+            continue
+
         c_content = _extract_fenced(raw, "c")
         filepath = out_dir / step["output_filename"]
         filepath.write_text(c_content, encoding="utf-8")
