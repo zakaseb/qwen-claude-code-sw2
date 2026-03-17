@@ -3,46 +3,93 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>C → SysML MBSE Pipeline</title>
+  <title>C ↔ SysML MBSE Pipeline</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
   <header>
-    <h1>C → SysML MBSE Pipeline</h1>
-    <p class="tagline">Reverse-engineer C code into 10+ SysML YAML artifacts · Fully local, zero data leakage</p>
+    <h1>C ↔ SysML MBSE Pipeline</h1>
+    <p class="tagline">Bidirectional: C → YAML artifacts &amp; YAML artifacts → C code · Fully local, zero data leakage</p>
   </header>
 
   <main>
-    <section class="input-section">
-      <h2>Input C Code</h2>
-      <div class="tabs">
-        <button type="button" class="tab active" data-tab="paste">Paste</button>
-        <button type="button" class="tab" data-tab="upload">Upload</button>
-      </div>
-      <div class="tab-panel active" id="panel-paste">
-        <textarea id="c-code" placeholder="Paste your C source code here (structs, functions, enums, etc.)..." rows="14"></textarea>
-      </div>
-      <div class="tab-panel" id="panel-upload">
-        <div class="upload-zone" id="upload-zone">
-          <input type="file" id="file-input" accept=".c,.h" hidden>
-          <p>Drop a .c or .h file here, or click to browse</p>
+    <!-- ============================================================ -->
+    <!-- MODE SELECTOR                                                 -->
+    <!-- ============================================================ -->
+    <div class="mode-selector">
+      <button type="button" class="mode-btn active" data-mode="c2yaml">C → SysML YAML</button>
+      <button type="button" class="mode-btn" data-mode="yaml2c">SysML YAML → C Code</button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODE: C → YAML                                                -->
+    <!-- ============================================================ -->
+    <div class="mode-panel active" id="mode-c2yaml">
+      <section class="input-section">
+        <h2>Input C Code</h2>
+        <div class="tabs">
+          <button type="button" class="tab active" data-tab="paste">Paste</button>
+          <button type="button" class="tab" data-tab="upload">Upload</button>
         </div>
+        <div class="tab-panel active" id="panel-paste">
+          <textarea id="c-code" placeholder="Paste your C source code here (structs, functions, enums, etc.)..." rows="14"></textarea>
+        </div>
+        <div class="tab-panel" id="panel-upload">
+          <div class="upload-zone" id="upload-zone-c">
+            <input type="file" id="file-input-c" accept=".c,.h" hidden>
+            <p>Drop a .c or .h file here, or click to browse</p>
+          </div>
+        </div>
+        <button type="button" id="generate-yaml-btn" class="primary">Generate SysML Artifacts</button>
+      </section>
+
+      <section class="pipeline-section hidden" id="yaml-pipeline-section">
+        <h2>YAML Generation Pipeline</h2>
+        <div id="yaml-pipeline-progress" class="pipeline-progress"></div>
+        <div class="pipeline-actions hidden" id="yaml-pipeline-actions">
+          <button type="button" id="download-yaml-all-btn" class="primary">Download All YAML (ZIP)</button>
+          <button type="button" id="generate-c-from-run-btn" class="primary accent-green">Generate C Code from These Artifacts</button>
+        </div>
+      </section>
+
+      <section class="preview-section hidden" id="yaml-preview-section">
+        <h2 id="yaml-preview-title">Preview</h2>
+        <div class="preview-tabs" id="yaml-preview-tabs"></div>
+        <pre id="yaml-preview"></pre>
+      </section>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODE: YAML → C                                                -->
+    <!-- ============================================================ -->
+    <div class="mode-panel" id="mode-yaml2c">
+      <section class="input-section">
+        <h2>Input YAML Artifacts</h2>
+        <p class="hint">Upload a ZIP containing your SysML YAML artifacts (00_metadata.yaml through 09_generation_config.yaml).</p>
+        <div class="upload-zone" id="upload-zone-yaml">
+          <input type="file" id="file-input-yaml" accept=".zip,.yaml,.yml" hidden>
+          <p>Drop a .zip of YAML files here, or click to browse</p>
+        </div>
+        <div id="yaml-upload-status" class="upload-status"></div>
+        <button type="button" id="generate-c-upload-btn" class="primary" disabled>Generate C Code</button>
+      </section>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- C CODE GENERATION PIPELINE (shared by both modes)             -->
+    <!-- ============================================================ -->
+    <section class="pipeline-section hidden" id="c-pipeline-section">
+      <h2>C Code Generation Pipeline</h2>
+      <div id="c-pipeline-progress" class="pipeline-progress"></div>
+      <div class="pipeline-actions hidden" id="c-pipeline-actions">
+        <button type="button" id="download-c-all-btn" class="primary">Download All C Files (ZIP)</button>
       </div>
-      <button type="button" id="generate-btn" class="primary">Generate SysML Artifacts</button>
     </section>
 
-    <section class="pipeline-section hidden" id="pipeline-section">
-      <h2>Generation Pipeline</h2>
-      <div id="pipeline-progress" class="pipeline-progress"></div>
-      <div class="pipeline-actions hidden" id="pipeline-actions">
-        <button type="button" id="download-all-btn" class="primary">Download All (ZIP)</button>
-      </div>
-    </section>
-
-    <section class="preview-section hidden" id="preview-section">
-      <h2 id="preview-title">Preview</h2>
-      <div class="preview-tabs" id="preview-tabs"></div>
-      <pre id="yaml-preview"></pre>
+    <section class="preview-section hidden" id="c-preview-section">
+      <h2 id="c-preview-title">Preview</h2>
+      <div class="preview-tabs" id="c-preview-tabs"></div>
+      <pre id="c-preview"></pre>
     </section>
   </main>
 

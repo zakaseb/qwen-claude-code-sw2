@@ -10,7 +10,7 @@ This setup allows you to run a local LLM (Qwen3-Coder-30B-A3B-Instruct) using ll
 
 - **Local Execution**: Run code generation models entirely locally without internet access after initial download
 - **Claude Code API compatible** through litellm proxy
-- **C-to-SysML MBSE Pipeline**: A web-based UI for reverse-engineering C source code into SysML YAML artifacts, fully localized with zero data leakage to the internet
+- **Bidirectional C ↔ SysML MBSE Pipeline**: A web-based UI supporting both directions — reverse-engineer C source code into SysML YAML artifacts, and forward-generate complete C code from YAML artifacts. Fully localized with zero data leakage.
 
 ## C-to-SysML MBSE Pipeline
 
@@ -58,6 +58,23 @@ The frontend (`webapp/static/`) provides:
 - Click-to-preview tabs for inspecting any generated artifact
 - A **Download All (ZIP)** button to retrieve all 11 YAML files at once
 - Individual file download via the API
+
+## SysML YAML → C Code Generation (Forward Direction)
+
+After generating YAML artifacts (or by uploading existing ones), the pipeline can generate complete, compilable C code:
+
+| File | Purpose |
+|------|---------|
+| `module.h` | Header — include guards, system/project includes, constants, struct/typedef definitions, function prototypes. Derived from metadata, BDD, parametric diagram, and generation config. |
+| `module.c` | Implementation — complete function implementations following the activity diagram flow, state machine transitions, sequence diagram ordering, and parametric constraints. Satisfies all requirements from the requirements diagram. |
+| `test_module.c` | Unit tests — Unity C framework test file implementing every test case from `08_test_cases.yaml` with proper assertions, test data, and traceability to verification requirements. |
+
+### Two ways to use:
+
+1. **From C → YAML → C roundtrip**: Generate YAML artifacts first, then click **Generate C Code from These Artifacts**
+2. **From uploaded YAML**: Switch to the **SysML YAML → C Code** tab and upload a ZIP of your YAML artifacts
+
+Each generated C file is streamed in real time with live preview. Download individually or as a ZIP.
 
 ## What does not work
 - Think, Ultrathing etc. reasoning_effort is currently dropped as non-thinking model is currently used. To use a Qwen thinking/non-thinking model a litellm hook needs to be written to add ` /think`  ` /nothink` tags to requests. Or wait until litellm support Qwen API.
